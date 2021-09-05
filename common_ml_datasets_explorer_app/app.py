@@ -32,7 +32,9 @@ def main():
 	# all_image = [Image.open(i) for i in img_list]
 	# st.image(all_image)
 	
-	def file_selector(folder_path='./datasets'):
+	
+	def file_selector():
+	    folder_path = "./datasets"
 	    filenames = os.listdir(folder_path)
 	    selected_filename = st.selectbox('Select a file', filenames)
 	    return os.path.join(folder_path, selected_filename)

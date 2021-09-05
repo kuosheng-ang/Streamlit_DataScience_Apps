@@ -15,9 +15,9 @@ import seaborn as sns
 
 
 def main():
-	"""Common ML Data Explorer """
+
 # 	st.title("Common ML Dataset Explorer")
-	st.subheader("Simple Time-Series Analysis App with Streamlit")
+# 	st.subheader("Simple Time-Series Analysis App with Streamlit")
 
 	html_temp = """
 	<div style="background-color:tomato;"><p style="color:white;font-size:60px;"> Time Series Analysis</p></div>
@@ -27,7 +27,7 @@ def main():
 	# img_list = glob.glob("images/*.png")
 	# # st.write(img_list)
 	# # for i in img_list:
-	# # 	c_image = Image.open(i)
+	# 	c_image = Image.open(i)
 	# # 	st.image(i)
 	# all_image = [Image.open(i) for i in img_list]
 	# st.image(all_image)
@@ -233,8 +233,6 @@ def main():
 	# 	# st.text(DOWNLOAD_TPL)
 	# 	st.text(DOWNLOAD_TPL)
 	# 	st.markdown(DOWNLOAD_TPL)
-
-
 
 
 if __name__ == '__main__':

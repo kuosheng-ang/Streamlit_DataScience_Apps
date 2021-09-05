@@ -40,8 +40,8 @@ def main():
 		return GI_df
 	
 	def preprocessing_data():
-
-		GI_Sales_Stats_Data = load_data([['Package', 'Total Quantity', 'GI-Year Month']])
+		GI_Sales_Stats_Data = load_data()
+		GI_Sales_Stats_Data = GI_Sales_Stats_Data([['Package', 'Total Quantity', 'GI-Year Month']])
 		GI_Sales_Stats_Data['GI-Year Month'] = pd.to_datetime(GI_Sales_Stats_Data['GI-Year Month'])
 		return GI_Sales_Stats_Data
 

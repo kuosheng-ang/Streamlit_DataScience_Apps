@@ -27,8 +27,8 @@ def main():
 	st.subheader("Predicting Contraceptive Choice with ML and Streamlit")
 
 	# Load Our Dataset
-# 	df = pd.read_csv("cmc_dataset.csv")
-	df = pd.read_csv(Path("cmc_dataset.csv").parents[1])
+	df = pd.read_csv("/cmc_dataset.csv")
+# 	df = pd.read_csv(Path("cmc_dataset.csv").parents[1])
 
 	if st.checkbox("Show DataSet"):
 		number = st.number_input("Number of Rows to View")

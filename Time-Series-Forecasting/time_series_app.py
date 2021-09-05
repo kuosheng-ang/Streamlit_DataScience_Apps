@@ -90,8 +90,8 @@ def main():
 	# Matplotlib Plot on each product category - Bar Chart
 	if st.checkbox("Bar Chart Plot "):
 		fig, ax = plt.subplots(figsize=(15, 8))
-		product_sub_cat = preprocessing_data(['Package']).unique()
 		GI_Sales_stats_data = preprocessing_data()
+		product_sub_cat = GI_Sales_stats_data['Package'].unique()
 		selected_product_category = st.selectbox('Select Product Category:', product_sub_cat)
 		GI_Category_Shipment_df = GI_Sales_stats_data.loc[GI_Sales_stats_data['Package'] == selected_product_category]
 		ax = (GI_Category_Shipment_df.groupby(GI_Category_Shipment_df['GI-Year Month'].dt.strftime('%Y-%m'))['Total Quantity'].sum().plot.bar(figsize=(15, 6)))
@@ -103,8 +103,8 @@ def main():
 	# Matplotlib Plot on each product category - line graph Chart
 	elif st.checkbox("Line Chart Plot "):
 		fig, ax = plt.subplots(figsize=(15, 8))
-		product_sub_cat = preprocessing_data(['Package']).unique()
 		GI_Sales_stats_data = preprocessing_data()
+		product_sub_cat = GI_Sales_stats_data['Package'].unique()
 		selected_product_category = st.selectbox('Select Product Category:', product_sub_cat)
 		GI_Category_Shipment_df = GI_Sales_stats_data.loc[GI_Sales_stats_data['Package'] == selected_product_category]
 		ax = (GI_Category_Shipment_df.groupby(GI_Category_Shipment_df['GI-Year Month'].dt.strftime('%Y-%m'))['Total Quantity'].sum().plot(kind='line', figsize=(15, 6)))

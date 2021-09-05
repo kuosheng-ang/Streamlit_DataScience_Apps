@@ -34,7 +34,7 @@ def main():
 
 	@st.cache(persist=True)
 	def load_data():
-		folder_path = '/datasets'
+		folder_path = './datasets'
 		selected_filename = 'GI_data_modified.csv'
 		GI_df = pd.read_csv(os.path.join(folder_path, selected_filename))
 		return GI_df

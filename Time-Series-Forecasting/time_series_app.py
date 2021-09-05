@@ -37,8 +37,7 @@ def main():
 		folder_path = os.path.dirname('GI_data_modified.csv')
 # 		print(folder_path)
 		selected_filename = '/GI_data_modified.csv'
-# 		GI_df = pd.read_csv(os.path.join(folder_path, selected_filename))
-		
+		GI_df = pd.read_csv(os.path.join(folder_path, selected_filename))
 		return GI_df
 	
 	def preprocessing_data():

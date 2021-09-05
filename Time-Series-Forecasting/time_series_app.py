@@ -16,7 +16,7 @@ import seaborn as sns
 
 def main():
 	"""Common ML Data Explorer """
-	st.title("Common ML Dataset Explorer")
+# 	st.title("Common ML Dataset Explorer")
 	st.subheader("Simple Time-Series Analysis App with Streamlit")
 
 	html_temp = """

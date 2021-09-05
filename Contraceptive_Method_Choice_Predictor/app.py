@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np 
 
 # Data Viz Pkgs
-# import matplotlib
+import matplotlib
 matplotlib.use('Agg')# To Prevent Errors
 import matplotlib.pyplot as plt
 import seaborn as sns 

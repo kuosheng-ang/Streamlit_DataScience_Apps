@@ -3,3 +3,5 @@ numpy==1.21.1
 streamlit==0.73.0
 matplotlib==3.4.3
 seaborn==0.11.2
+plotly==5.3.1
+plotly-express==0.4.1

@@ -552,11 +552,20 @@ def home(homepage_path, contact_path):
 	with open(homepage_path, 'r', encoding='utf-8') as homepage:
 		homepage = homepage.read().split('---Insert video---')
 		st.markdown(homepage[0], unsafe_allow_html=True)
-	contact_us_ui(contact_path, if_home=True)
+		contact_us_ui(contact_path, if_home=True)
 	with st.beta_expander('Showcase', expanded=True):
 		st.text('Select on the sidebar for each section for different category/types of analysis -Descriptive and Predictive Analytics')
 
-
+def contact_us_ui(contact_path, if_home=False):
+    if not if_home: 
+        st.write('# New Features 💡')
+        st.text_input('Send us suggestions', 'Write something...')
+        if_send = st.button('Send')
+        if if_send:
+            st.success('Thank you:) Your suggestions have been received. ')
+            st.balloons()
+    with open(contact_path, 'r', encoding='utf-8') as contact:
+        st.write(contact.read())
 
 if __name__ == '__main__':
 
@@ -567,9 +576,10 @@ if __name__ == '__main__':
 	st.sidebar.header('Navigation Menu')
 	main()
 	side_menu_selectbox = st.sidebar.radio(
-		'Menu', ('Descriptive Analysis', 'Predictive Analysis - ARIMA', 'Predictive Analysis - FbProphet','Bayesian modeling and visualization - PyMC3'))
-	if side_menu_selectbox == 'Descriptive Analysis':
+		'Menu', ('Home','Descriptive Analysis', 'Predictive Analysis - ARIMA', 'Predictive Analysis - FbProphet','Bayesian modeling and visualization - PyMC3'))
+	if side_menu_selectbox == 'Home':
 		home(homepage_path=os.path.join(image_folder_path,'doc/homepage.md'), contact_path=os.path.join(image_folder_path,'doc/contact.md'))
+	elif side_menu_selectbox == 'Descriptive Analysis':
 		descriptive_analysis()
 	elif side_menu_selectbox == 'Predictive Analysis - ARIMA':
 		sub_menu_selectbox = st.sidebar.radio(

@@ -575,6 +575,6 @@ if __name__ == '__main__':
 		sub_menu_selectbox = st.sidebar.radio(
 			'ARIMA', ('Exponential Smoothing (Holt Winter)', 'Double Exponential Smoothing'))
 	elif sub_menu_selectbox == 'Predictive Analysis - FbProphet':
-			# fbprophet()
+		fbprophet()
 	elif sub_menu_selectbox == 'Upload Data':
 		upload_data_ui()

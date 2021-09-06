@@ -15,9 +15,9 @@ matplotlib.use('Agg')# To Prevent Errors
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+import sqlite3
 
-
-
+sql_conn = sqlite3.connect('time_series_data.db')
 
 
 # Fxn to Download
@@ -53,8 +53,7 @@ def main():
 @st.cache(persist=True)
 def load_data():
 	# DB Management
-	import sqlite3
-	sql_conn = sqlite3.connect('time_series_data.db')
+
 	# folder_path = os.path.dirname('GI_data_modified.csv')
 	folder_path = Path(__file__).parents[0]
 	selected_filename = 'datasets/GI_data_modified.csv'

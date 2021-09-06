@@ -106,7 +106,8 @@ def main():
 	# # Summary
 	# if st.checkbox("Summary"):
 	# 	st.write(df.describe())
-	
+def descriptive_analysis():
+
 	st.subheader("Time-Series Data Visualization")
 	# Show Correlation Plots
 
@@ -548,14 +549,9 @@ def home(homepage_path, contact_path):
     '''The home page. '''
     with open(homepage_path, 'r', encoding='utf-8') as homepage:
         homepage = homepage.read().split('---Insert video---')
-        st.markdown(homepage[0], unsafe_allow_html=True)
-        col1, col2 = st.beta_columns([1, 1])
-        with col2:
-            st.video('https://www.youtube.com/watch?v=zFMgpxG-chM')
-        with col1:
-            st.image('https://images.ctfassets.net/zw48pl1isxmc/4QYN7VubAAgEAGs0EuWguw/165749ef2fa01c1c004b6a167fd27835/ab-testing.png', use_column_width='auto')
-            st.text('Image source: Optimizely')
-        st.markdown(homepage[1], unsafe_allow_html=True)
+	with st.beta_expander('Showcase', expanded=True):
+		st.text('Select on the sidebar for each section for different category/types of analysis - '
+				'Descriptive and Predictive Analytics')
     contact_us_ui(contact_path, if_home=True)
 
 
@@ -566,16 +562,16 @@ if __name__ == '__main__':
 	st.sidebar.image(os.path.join(image_folder_path,'image/Time-Series-Analysis.jpg'), width=280)
 	st.sidebar.write('')  # Line break
 	st.sidebar.header('Navigation Menu')
+	main()
 	side_menu_selectbox = st.sidebar.radio(
 		'Menu', ('Descriptive Analysis', 'Predictive Analysis - ARIMA', 'Predictive Analysis - FbProphet','Bayesian modeling and visualization - PyMC3'))
 	if side_menu_selectbox == 'Descriptive Analysis':
-
 		home(homepage_path=os.path.join(image_folder_path,'doc/homepage.md'), contact_path=os.path.join(image_folder_path,'doc/contact.md'))
 		descriptive_analysis()
-	elif side_menu_selectbox == 'Predictive Analysis - Model Comparison':
+	elif side_menu_selectbox == 'Predictive Analysis - ARIMA':
 		sub_menu_selectbox = st.sidebar.radio(
 			'ARIMA', ('Exponential Smoothing (Holt Winter)', 'Double Exponential Smoothing'))
-		# if sub_menu_selectbox == 'Predictive Analysis - FbProphet':
+	elif sub_menu_selectbox == 'Predictive Analysis - FbProphet':
 			# fbprophet()
 	elif sub_menu_selectbox == 'Upload Data':
 		upload_data_ui()

@@ -553,11 +553,9 @@ def home(homepage_path, contact_path):
 		homepage = homepage.read().split('---Insert video---')
 		st.markdown(homepage[0], unsafe_allow_html=True)
 		contact_us_ui(contact_path, if_home=True)
-	with st.beta_expander('Showcase', expanded=True):
-		st.text('Select on the sidebar for each section for different category/types of analysis -Descriptive and Predictive Analytics')
-
+	
 def contact_us_ui(contact_path, if_home=False):
-    if not if_home: 
+    if not if_home:
         st.write('# New Features 💡')
         st.text_input('Send us suggestions', 'Write something...')
         if_send = st.button('Send')

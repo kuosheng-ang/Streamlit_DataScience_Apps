@@ -578,7 +578,7 @@ if __name__ == '__main__':
 	if side_menu_selectbox == 'Home':
 		home(homepage_path=os.path.join(image_folder_path,'doc/homepage.md'), contact_path=os.path.join(image_folder_path,'doc/contact.md'))
 	elif side_menu_selectbox == 'Descriptive Analysis':
-		preprocessing_data()
+		
 		descriptive_analysis()
 	elif side_menu_selectbox == 'Predictive Analysis - ARIMA':
 		sub_menu_selectbox = st.sidebar.radio(

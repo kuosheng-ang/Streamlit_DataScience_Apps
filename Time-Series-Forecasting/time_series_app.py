@@ -111,10 +111,10 @@ def descriptive_analysis():
 	st.subheader("Time-Series Data Visualization")
 	# Show Correlation Plots
 
-	col1, col2 = st.beta_columns([1, 1])
+	# col1, col2 = st.beta_columns([1, 1])
 	# Matplotlib Plot on each product category - Bar Chart
-	# if st.checkbox("Bar Chart Plot "):
-	with col2:
+	if st.checkbox("Bar Chart Plot "):
+	# with col2:
 		fig, ax = plt.subplots(figsize=(15, 8))
 		GI_Sales_stats_data = preprocessing_data()
 		product_sub_cat = GI_Sales_stats_data['Package'].unique()
@@ -127,8 +127,8 @@ def descriptive_analysis():
 		st.pyplot(fig)
 
 	# Matplotlib Plot on each product category - line graph Chart
-	# elif st.checkbox("Line Chart Plot "):
-	with col1:
+	elif st.checkbox("Line Chart Plot "):
+	# with col1:
 		fig, ax = plt.subplots(figsize=(15, 8))
 		product_sub_cat = preprocessing_data(['Package']).unique()
 		GI_Sales_stats_data = preprocessing_data()

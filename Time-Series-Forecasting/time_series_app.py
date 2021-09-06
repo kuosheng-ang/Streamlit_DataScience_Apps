@@ -548,8 +548,8 @@ def upload_data_ui():
 if __name__ == '__main__':
 
 	'''Add control flows to organize the UI sections. '''
-	folder_path = Path(__file__).parents[0]
-	st.sidebar.image(os.path.join(folder_path,'/image/Time-Series-Analysis.jpg'), width=200)
+	image_folder_path = Path(__file__).parents[0]
+	st.sidebar.image(os.path.join(image_folder_path,'image/Time-Series-Analysis.jpg'), width=200)
 	st.sidebar.write('')  # Line break
 	st.sidebar.header('Navigation Menu')
 	side_menu_selectbox = st.sidebar.radio(

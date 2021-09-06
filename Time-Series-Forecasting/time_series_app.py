@@ -544,12 +544,26 @@ def upload_data_ui():
 								st.pyplot(fig_3)
 	return
 
+def home(homepage_path, contact_path):
+    '''The home page. '''
+    with open(homepage_path, 'r', encoding='utf-8') as homepage:
+        homepage = homepage.read().split('---Insert video---')
+        st.markdown(homepage[0], unsafe_allow_html=True)
+        col1, col2 = st.beta_columns([1, 1])
+        with col2:
+            st.video('https://www.youtube.com/watch?v=zFMgpxG-chM')
+        with col1:
+            st.image('https://images.ctfassets.net/zw48pl1isxmc/4QYN7VubAAgEAGs0EuWguw/165749ef2fa01c1c004b6a167fd27835/ab-testing.png', use_column_width='auto')
+            st.text('Image source: Optimizely')
+        st.markdown(homepage[1], unsafe_allow_html=True)
+    contact_us_ui(contact_path, if_home=True)
+
 
 if __name__ == '__main__':
 
 	'''Add control flows to organize the UI sections. '''
 	image_folder_path = Path(__file__).parents[0]
-	st.sidebar.image(os.path.join(image_folder_path,'image/Time-Series-Analysis.jpg'), width=200)
+	st.sidebar.image(os.path.join(image_folder_path,'image/Time-Series-Analysis.jpg'), width=280)
 	st.sidebar.write('')  # Line break
 	st.sidebar.header('Navigation Menu')
 	side_menu_selectbox = st.sidebar.radio(

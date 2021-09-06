@@ -313,8 +313,6 @@ def main():
 	# 	st.write(df.describe())
 	
 
-
-	def fbprophet():
 	# # Seaborn Plot
 	# if st.checkbox("Correlation Plot with Annotation[Seaborn]"):
 	# 	st.write(sns.heatmap(df.corr(),annot=True))
@@ -441,7 +439,7 @@ def main():
 		with st.beta_container():
 			st.title('Two-sample Student\'s t-test')
 			st.header('Continuous variables')
-	
+
 		# Render file dropbox
 		with st.beta_expander('Upload data', expanded=True):
 			how_to_load = st.selectbox('How to access raw data? ', ('Upload', 'URL', 'Sample data'))
@@ -564,6 +562,6 @@ if __name__ == '__main__':
 		sub_menu_selectbox = st.sidebar.radio(
 			'ARIMA', ('Exponential Smoothing (Holt Winter)', 'Double Exponential Smoothing'))
 		if sub_menu_selectbox == 'Predictive Analysis - FbProphet':
-			fbprophet()
+			# fbprophet()
 	elif sub_menu_selectbox == 'Upload Data':
 			upload_data_ui()

@@ -552,6 +552,119 @@ def fbprophet():
 	# 	st.text(DOWNLOAD_TPL)
 	# 	st.markdown(DOWNLOAD_TPL)
 
+def upload_data_ui():
+	'''The Two-sample Student's t-test - Continuous variables (upload data) section. '''
+
+	# Render the header.
+	with st.beta_container():
+		st.title('Two-sample Student\'s t-test')
+		st.header('Continuous variables')
+
+	# Render file dropbox
+	with st.beta_expander('Upload data', expanded=True):
+		how_to_load = st.selectbox('How to access raw data? ', ('Upload', 'URL', 'Sample data'))
+		if how_to_load == 'Upload':
+			uploaded_file = st.file_uploader("Choose a CSV file", type='.csv')
+		if uploaded_file is not None:
+			with st.spinner('Loading data...'):
+				df = _load_data(uploaded_file)
+
+	if uploaded_file is not None:
+		with st.beta_expander('Data preview', expanded=True):
+			with st.spinner('Loading data...'):
+				st.dataframe(df)
+				st.write('`{}` rows, `{}` columns'.format(df.shape[0], df.shape[1]))
+
+	if uploaded_file is not None:
+		with st.beta_expander('Configurations', expanded=True):
+			df_columns_types = [ind + ' (' + val.name + ')' for ind, val in df.dtypes.iteritems()]
+			df_columns_dict = {(ind + ' (' + val.name + ')'): ind for ind, val in df.dtypes.iteritems()}
+			var_group_label = df_columns_dict[st.selectbox('Group label', df_columns_types)]
+			col1, col2 = st.beta_columns(2)
+			with col1:
+				var_group_name_1 = st.selectbox('Group name A', df[var_group_label].unique())
+			with col2:
+				var_group_name_2 = st.selectbox('Group name B', df[var_group_label].unique())
+			var_outcome = [df_columns_dict[var] for var in st.multiselect('Outcome variable: ', df_columns_types)]
+			col1, col2 = st.beta_columns([1, 1])
+			with col1:
+				conf_level = st.select_slider('Confidence level: ', ('0.90', '0.95', '0.99'))
+			with col2:
+				hypo_type = st.radio('Hypothesis type: ', ('One-sided', 'Two-sided'))
+			if_dropna = st.checkbox('Drop null values', value=True)
+			if_remove_outliers = st.checkbox('Remove outliers', value=False)
+			if if_remove_outliers:
+				outlier_lower_qtl, outlier_upper_qtl = st.slider(
+					'Quantiles (observations falling into the tails will be removed): ', min_value=0.0,
+					max_value=1.0, step=0.01, value=(0.0, 0.95))
+			# col1, col2 = st.beta_columns(2)
+			# with col1:
+			#     outlier_lower_qtl = st.slider('Lower quantile: ', min_value=0.0, max_value=0.25, step=0.01, value=0.0)
+			# with col2:
+			#     outlier_upper_qtl = st.slider('Upper quantile: ', min_value=0.75, max_value=1.00, step=0.01, value=0.99)
+			else:
+				outlier_lower_qtl, outlier_upper_qtl = None, None
+			if_data_description = st.checkbox('Show descriptive statistics', value=False)
+			if_apply = st.button('Confirm')
+
+	if uploaded_file is not None:
+		if if_apply:
+			if var_group_name_1 == var_group_name_2:
+				st.error('The names of Group A and Group B cannot be identical. ')
+				st.stop()
+			for col in var_outcome:
+				df = _process_data(df=df, col=col, if_dropna=if_dropna, if_remove_outliers=if_remove_outliers,
+								   outlier_lower_qtl=outlier_lower_qtl, outlier_upper_qtl=outlier_upper_qtl)
+			# Render hypothesis testing
+			with st.beta_expander('Hypothesis testing', expanded=True):
+				with st.spinner('Calculating...'):
+					df_group_1 = df[df[var_group_label] == var_group_name_1]
+					df_group_2 = df[df[var_group_label] == var_group_name_2]
+					for var in var_outcome:
+						st.markdown(f'`{var}`: {df[var].dtype}')
+						mu_1 = np.mean(df_group_1[var])
+						mu_2 = np.mean(df_group_2[var])
+						sigma_1 = np.std(df_group_1[var], ddof=1)
+						sigma_2 = np.std(df_group_2[var], ddof=1)
+						n_1 = len(df_group_1[var])
+						n_2 = len(df_group_2[var])
+
+						tstat, p_value, tstat_denom, pooled_sd, effect_size = scipy_ttest_ind_from_stats(
+							mu_1, mu_2, sigma_1, sigma_2, n_1, n_2)
+						observed_power = sm_tt_ind_solve_power(effect_size=effect_size, n1=n_1, n2=n_2,
+															   alpha=1 - float(conf_level), power=None,
+															   hypo_type=hypo_type, if_plot=False)
+
+						# Render the results
+						ttest_plot(mu_1, mu_2, sigma_1, sigma_2, conf_level, tstat, p_value, tstat_denom, hypo_type,
+								   observed_power)
+
+			# Render descriptive statistics
+			if if_data_description:
+				with st.beta_expander('Data descriptions', expanded=True):
+					with st.spinner('Processing data...'):
+						# if if_factorize:
+						#     df[var_hot_encoding] = df[var_hot_encoding].astype('category')
+						df = df[
+							(df[var_group_label] == var_group_name_1) | (df[var_group_label] == var_group_name_2)]
+						df_summary = df.groupby(by=var_group_label).describe(include='all')
+
+						# Plot distribution
+						for var in var_outcome:
+							st.markdown(f'`{var}`: {df[var].dtype}')
+							st.table(df_summary[var].T.dropna())
+							fig_1 = sns.displot(data=df, x=var, col=var_group_label, kde=True)
+							fig_2 = sns.displot(data=df, kind="ecdf", x=var, hue=var_group_label, rug=True)
+							fig_3, ax = plt.subplots()
+							ax = sns.boxplot(data=df, y=var, hue=var_group_label)
+							st.pyplot(fig_1)
+							col1, col2 = st.beta_columns([1, 1.1])
+							with col1:
+								st.pyplot(fig_2)
+							with col2:
+								st.pyplot(fig_3)
+	return
+
 
 if __name__ == '__main__':
 
@@ -570,4 +683,5 @@ if __name__ == '__main__':
 			'ARIMA', ('Exponential Smoothing (Holt Winter)', 'Double Exponential Smoothing'))
 		if sub_menu_selectbox == 'Predictive Analysis - FbProphet':
 			fbprophet()
->>>>>>> 351368145f85e3d4ead89c5c2b2fb91b8a7e066c
+	elif sub_menu_selectbox == 'Upload Data':
+			upload_data_ui()

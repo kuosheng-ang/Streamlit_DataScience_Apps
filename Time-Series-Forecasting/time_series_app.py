@@ -142,7 +142,7 @@ def descriptive_analysis():
 
 	with st.beta_expander('To View Dataframe? 👉'):
 		st.dataframe(GI_Category_Shipment_df.head(35))
-	with st.beta_expander("Save TO Database as SQL : "):
+	with st.beta_expander("Save TO Database : "):
 		GI_Category_Shipment_df.to_sql(name='EmailsTable', con=sql_conn, if_exists='append')
 		st.dataframe(GI_Category_Shipment_df)
 		make_downloadable_df(GI_Category_Shipment_df)

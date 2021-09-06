@@ -16,9 +16,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-# DB Management
-import sqlite3
-sql_conn = sqlite3.connect('time_series_data.db')
+
 
 
 
@@ -54,6 +52,9 @@ def main():
 
 @st.cache(persist=True)
 def load_data():
+	# DB Management
+	import sqlite3
+	sql_conn = sqlite3.connect('time_series_data.db')
 	# folder_path = os.path.dirname('GI_data_modified.csv')
 	folder_path = Path(__file__).parents[0]
 	selected_filename = 'datasets/GI_data_modified.csv'
@@ -140,17 +141,17 @@ def descriptive_analysis():
 		ax.set_title("Shipment Quantities for " + selected_product_category + " package type ", fontsize=15)
 		st.pyplot(fig)
 
-	with st.beta_expander('To View Dataframe? 👉'):
-		st.dataframe(GI_Category_Shipment_df.head(15))
-	with st.beta_expander("Save TO Database as SQL : "):
-		GI_Category_Shipment_df.to_sql(name='EmailsTable', con=conn, if_exists='append')
-		st.dataframe(GI_Category_Shipment_df)
-		make_downloadable_df(result_df)
-	with st.beta_expander("Save TO file 📩: "):
-		filenames = os.listdir(folder_path)
-		selected_filename = st.selectbox('Select file folder to save:', filenames)
-		dataformat = st.sidebar.selectbox("Save Data As", ["csv", "json"])
-		make_downloadable_df_format(GI_Category_Shipment_df, dataformat)
+with st.beta_expander('To View Dataframe? 👉'):
+	st.dataframe(GI_Category_Shipment_df.head(15))
+with st.beta_expander("Save TO Database as SQL : "):
+	GI_Category_Shipment_df.to_sql(name='EmailsTable', con=sql_conn, if_exists='append')
+	st.dataframe(GI_Category_Shipment_df)
+	make_downloadable_df(result_df)
+with st.beta_expander("Save TO file 📩: "):
+	filenames = os.listdir(folder_path)
+	selected_filename = st.selectbox('Select file folder to save:', filenames)
+	dataformat = st.sidebar.selectbox("Save Data As", ["csv", "json"])
+	make_downloadable_df_format(GI_Category_Shipment_df, dataformat)
 
 
 	# # Seaborn Plot
@@ -578,7 +579,7 @@ if __name__ == '__main__':
 	if side_menu_selectbox == 'Home':
 		home(homepage_path=os.path.join(image_folder_path,'doc/homepage.md'), contact_path=os.path.join(image_folder_path,'doc/contact.md'))
 	elif side_menu_selectbox == 'Descriptive Analysis':
-		
+
 		descriptive_analysis()
 	elif side_menu_selectbox == 'Predictive Analysis - ARIMA':
 		sub_menu_selectbox = st.sidebar.radio(

@@ -141,11 +141,11 @@ def descriptive_analysis():
 		st.pyplot(fig)
 
 	with st.beta_expander('To View Dataframe? 👉'):
-		st.dataframe(GI_Category_Shipment_df.head(15))
+		st.dataframe(GI_Category_Shipment_df.head(35))
 	with st.beta_expander("Save TO Database as SQL : "):
 		GI_Category_Shipment_df.to_sql(name='EmailsTable', con=sql_conn, if_exists='append')
 		st.dataframe(GI_Category_Shipment_df)
-		make_downloadable_df(result_df)
+		make_downloadable_df(GI_Category_Shipment_df)
 	with st.beta_expander("Save TO file 📩: "):
 		filenames = os.listdir(folder_path)
 		selected_filename = st.selectbox('Select file folder to save:', filenames)

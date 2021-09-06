@@ -13,12 +13,14 @@ from pathlib import Path
 import matplotlib
 matplotlib.use('Agg')# To Prevent Errors
 import matplotlib.pyplot as plt
-import seaborn as sns 
+import seaborn as sns
 
 
 # DB Management
 import sqlite3
 sql_conn = sqlite3.connect('time_series_data.db')
+
+
 
 # Fxn to Download
 def make_downloadable_df(data):
@@ -28,6 +30,9 @@ def make_downloadable_df(data):
     new_filename = "dataframe_extracted_data_result_{}.csv".format(timestr)
     href = f'<a href="data:file/csv;base64,{b64}" download="{new_filename}">Click Here!</a>'
     st.markdown(href, unsafe_allow_html=True)
+
+
+
 
 def main():
 	"""Common ML Data Explorer """
@@ -37,7 +42,7 @@ def main():
 	html_temp = """
 	<div style="background-color:tomato;"><p style="color:white;font-size:60px;"> Time Series Analysis</p></div>
 	"""
-	st.markdown(html_temp,unsafe_allow_html=True)
+	st.markdown(html_temp, unsafe_allow_html=True)
 
 	# img_list = glob.glob("images/*.png")
 	# # st.write(img_list)
@@ -54,12 +59,14 @@ def main():
 		selected_filename = 'datasets/GI_data_modified.csv'
 		GI_df = pd.read_csv(os.path.join(folder_path, selected_filename))
 		return GI_df
-	
+
 	def preprocessing_data():
 		GI_Sales_Stats_Data = load_data()
 		GI_Sales_Stats_Data = GI_Sales_Stats_Data[['Package', 'Total Quantity', 'GI-Year Month']]
 		GI_Sales_Stats_Data['GI-Year Month'] = pd.to_datetime(GI_Sales_Stats_Data['GI-Year Month'])
 		return GI_Sales_Stats_Data
+
+
 
 	#
 	# # Show Dataset
@@ -145,7 +152,7 @@ def main():
 		make_downloadable_df_format(GI_Category_Shipment_df, dataformat)
 
 
-def fbprophet():
+	def fbprophet():
 	# # Seaborn Plot
 	# if st.checkbox("Correlation Plot with Annotation[Seaborn]"):
 	# 	st.write(sns.heatmap(df.corr(),annot=True))
@@ -266,87 +273,6 @@ def fbprophet():
 	# 	st.markdown(DOWNLOAD_TPL)
 
 
-if __name__ == '__main__':
-
-	'''Add control flows to organize the UI sections. '''
-	folder_path = Path(__file__).parents[0]
-	st.sidebar.image(os.path.join(folder_path,'/image/Time-Series-Analysis.jpg'), width=200)
-	st.sidebar.write('')  # Line break
-	st.sidebar.header('Navigation Menu')
-	side_menu_selectbox = st.sidebar.radio(
-		'Menu', ('Descriptive Analysis', 'Predictive Analysis - ARIMA', 'Predictive Analysis - FbProphet','Bayesian modeling and visualization - PyMC3'))
-	if side_menu_selectbox == 'Descriptive Analysis':
-		home(homepage_path='/doc/homepage.md', contact_path='/doc/contact.md')
-		descriptive_analysis()
-	elif side_menu_selectbox == 'Predictive Analysis - Model Comparison':
-		sub_menu_selectbox = st.sidebar.radio(
-			'ARIMA', ('Exponential Smoothing (Holt Winter)', 'Double Exponential Smoothing'))
-		if sub_menu_selectbox == 'Predictive Analysis - FbProphet':
-			fbprophet()
-=======
-import streamlit as st
-import plotly.express as px
-import plotly.graph_objects as go
-import os,glob
-import pandas as pd
-from pathlib import Path
-# import shutil
-# from PIL import Image
-# from zipfile import ZipFile
-# import pandas_profiling as pp
-
-# Data Viz Pkgs
-import matplotlib
-matplotlib.use('Agg')# To Prevent Errors
-import matplotlib.pyplot as plt
-import seaborn as sns 
-
-
-# DB Management
-import sqlite3
-sql_conn = sqlite3.connect('time_series_data.db')
-
-# Fxn to Download
-def make_downloadable_df(data):
-    csvfile = data.to_csv(index=False)
-    b64 = base64.b64encode(csvfile.encode()).decode()  # B64 encoding
-    st.markdown("### ** Download CSV File ** ")
-    new_filename = "dataframe_extracted_data_result_{}.csv".format(timestr)
-    href = f'<a href="data:file/csv;base64,{b64}" download="{new_filename}">Click Here!</a>'
-    st.markdown(href, unsafe_allow_html=True)
-
-def descriptive_analysis():
-	"""Common ML Data Explorer """
-	# st.title("Common ML Dataset Explorer")
-	st.subheader("Time-Series Analysis App")
-
-	html_temp = """
-	<div style="background-color:tomato;"><p style="color:white;font-size:60px;"> Time Series Analysis</p></div>
-	"""
-	st.markdown(html_temp,unsafe_allow_html=True)
-
-	# img_list = glob.glob("images/*.png")
-	# # st.write(img_list)
-	# # for i in img_list:
-	# # 	c_image = Image.open(i)
-	# # 	st.image(i)
-	# all_image = [Image.open(i) for i in img_list]
-	# st.image(all_image)
-
-	@st.cache(persist=True)
-	def load_data():
-		# folder_path = os.path.dirname('GI_data_modified.csv')
-		folder_path = Path(__file__).parents[0]
-		selected_filename = 'datasets/GI_data_modified.csv'
-		GI_df = pd.read_csv(os.path.join(folder_path, selected_filename))
-		return GI_df
-	
-	def preprocessing_data():
-		GI_Sales_Stats_Data = load_data()
-		GI_Sales_Stats_Data = GI_Sales_Stats_Data[['Package', 'Total Quantity', 'GI-Year Month']]
-		GI_Sales_Stats_Data['GI-Year Month'] = pd.to_datetime(GI_Sales_Stats_Data['GI-Year Month'])
-		return GI_Sales_Stats_Data
-
 	#
 	# # Show Dataset
 	# if st.checkbox("Show DataSet"):
@@ -386,52 +312,9 @@ def descriptive_analysis():
 	# if st.checkbox("Summary"):
 	# 	st.write(df.describe())
 	
-	st.subheader("Time-Series Data Visualization")
-	# Show Correlation Plots
-
-	col1, col2 = st.beta_columns([1, 1])
-	# Matplotlib Plot on each product category - Bar Chart
-	# if st.checkbox("Bar Chart Plot "):
-	with col2:
-		fig, ax = plt.subplots(figsize=(15, 8))
-		GI_Sales_stats_data = preprocessing_data()
-		product_sub_cat = GI_Sales_stats_data['Package'].unique()
-		selected_product_category = st.selectbox('Select Product Category:', product_sub_cat)
-		GI_Category_Shipment_df = GI_Sales_stats_data.loc[GI_Sales_stats_data['Package'] == selected_product_category]
-		ax = (GI_Category_Shipment_df.groupby(GI_Category_Shipment_df['GI-Year Month'].dt.strftime('%Y-%m'))['Total Quantity'].sum().plot.bar(figsize=(15, 6)))
-		ax.set_xlabel("Shipment Period (Y-M)", fontsize=15)
-		ax.set_ylabel("Units", fontsize=15)
-		ax.set_title("Shipment Quantities for " + selected_product_category + " package type ", fontsize=15)
-		st.pyplot(fig)
-
-	# Matplotlib Plot on each product category - line graph Chart
-	# elif st.checkbox("Line Chart Plot "):
-	with col1:
-		fig, ax = plt.subplots(figsize=(15, 8))
-		product_sub_cat = preprocessing_data(['Package']).unique()
-		GI_Sales_stats_data = preprocessing_data()
-		selected_product_category = st.selectbox('Select Product Category:', product_sub_cat)
-		GI_Category_Shipment_df = GI_Sales_stats_data.loc[GI_Sales_stats_data['Package'] == selected_product_category]
-		ax = (GI_Category_Shipment_df.groupby(GI_Category_Shipment_df['GI-Year Month'].dt.strftime('%Y-%m'))['Total Quantity'].sum().plot(kind='line', figsize=(15, 6)))
-		ax.set_xlabel("Shipment Period (Y-M)", fontsize=15)
-		ax.set_ylabel("Units", fontsize=15)
-		ax.set_title("Shipment Quantities for " + selected_product_category + " package type ", fontsize=15)
-		st.pyplot(fig)
-
-	with st.beta_expander('To View Dataframe? 👉'):
-		st.dataframe(GI_Category_Shipment_df.head(15))
-	with st.beta_expander("Save TO Database as SQL : "):
-		GI_Category_Shipment_df.to_sql(name='EmailsTable', con=conn, if_exists='append')
-		st.dataframe(GI_Category_Shipment_df)
-		make_downloadable_df(result_df)
-	with st.beta_expander("Save TO file 📩: "):
-		filenames = os.listdir(folder_path)
-		selected_filename = st.selectbox('Select file folder to save:', filenames)
-		dataformat = st.sidebar.selectbox("Save Data As", ["csv", "json"])
-		make_downloadable_df_format(GI_Category_Shipment_df, dataformat)
 
 
-def fbprophet():
+	def fbprophet():
 	# # Seaborn Plot
 	# if st.checkbox("Correlation Plot with Annotation[Seaborn]"):
 	# 	st.write(sns.heatmap(df.corr(),annot=True))
@@ -551,118 +434,118 @@ def fbprophet():
 	# 	st.text(DOWNLOAD_TPL)
 	# 	st.markdown(DOWNLOAD_TPL)
 
-def upload_data_ui():
-	'''The Two-sample Student's t-test - Continuous variables (upload data) section. '''
+	def upload_data_ui():
+		'''The Two-sample Student's t-test - Continuous variables (upload data) section. '''
 
-	# Render the header.
-	with st.beta_container():
-		st.title('Two-sample Student\'s t-test')
-		st.header('Continuous variables')
+		# Render the header.
+		with st.beta_container():
+			st.title('Two-sample Student\'s t-test')
+			st.header('Continuous variables')
+	
+		# Render file dropbox
+		with st.beta_expander('Upload data', expanded=True):
+			how_to_load = st.selectbox('How to access raw data? ', ('Upload', 'URL', 'Sample data'))
+			if how_to_load == 'Upload':
+				uploaded_file = st.file_uploader("Choose a CSV file", type='.csv')
+			if uploaded_file is not None:
+				with st.spinner('Loading data...'):
+					df = _load_data(uploaded_file)
 
-	# Render file dropbox
-	with st.beta_expander('Upload data', expanded=True):
-		how_to_load = st.selectbox('How to access raw data? ', ('Upload', 'URL', 'Sample data'))
-		if how_to_load == 'Upload':
-			uploaded_file = st.file_uploader("Choose a CSV file", type='.csv')
 		if uploaded_file is not None:
-			with st.spinner('Loading data...'):
-				df = _load_data(uploaded_file)
+			with st.beta_expander('Data preview', expanded=True):
+				with st.spinner('Loading data...'):
+					st.dataframe(df)
+					st.write('`{}` rows, `{}` columns'.format(df.shape[0], df.shape[1]))
 
-	if uploaded_file is not None:
-		with st.beta_expander('Data preview', expanded=True):
-			with st.spinner('Loading data...'):
-				st.dataframe(df)
-				st.write('`{}` rows, `{}` columns'.format(df.shape[0], df.shape[1]))
+		if uploaded_file is not None:
+			with st.beta_expander('Configurations', expanded=True):
+				df_columns_types = [ind + ' (' + val.name + ')' for ind, val in df.dtypes.iteritems()]
+				df_columns_dict = {(ind + ' (' + val.name + ')'): ind for ind, val in df.dtypes.iteritems()}
+				var_group_label = df_columns_dict[st.selectbox('Group label', df_columns_types)]
+				col1, col2 = st.beta_columns(2)
+				with col1:
+					var_group_name_1 = st.selectbox('Group name A', df[var_group_label].unique())
+				with col2:
+					var_group_name_2 = st.selectbox('Group name B', df[var_group_label].unique())
+				var_outcome = [df_columns_dict[var] for var in st.multiselect('Outcome variable: ', df_columns_types)]
+				col1, col2 = st.beta_columns([1, 1])
+				with col1:
+					conf_level = st.select_slider('Confidence level: ', ('0.90', '0.95', '0.99'))
+				with col2:
+					hypo_type = st.radio('Hypothesis type: ', ('One-sided', 'Two-sided'))
+				if_dropna = st.checkbox('Drop null values', value=True)
+				if_remove_outliers = st.checkbox('Remove outliers', value=False)
+				if if_remove_outliers:
+					outlier_lower_qtl, outlier_upper_qtl = st.slider(
+						'Quantiles (observations falling into the tails will be removed): ', min_value=0.0,
+						max_value=1.0, step=0.01, value=(0.0, 0.95))
+				# col1, col2 = st.beta_columns(2)
+				# with col1:
+				#     outlier_lower_qtl = st.slider('Lower quantile: ', min_value=0.0, max_value=0.25, step=0.01, value=0.0)
+				# with col2:
+				#     outlier_upper_qtl = st.slider('Upper quantile: ', min_value=0.75, max_value=1.00, step=0.01, value=0.99)
+				else:
+					outlier_lower_qtl, outlier_upper_qtl = None, None
+				if_data_description = st.checkbox('Show descriptive statistics', value=False)
+				if_apply = st.button('Confirm')
 
-	if uploaded_file is not None:
-		with st.beta_expander('Configurations', expanded=True):
-			df_columns_types = [ind + ' (' + val.name + ')' for ind, val in df.dtypes.iteritems()]
-			df_columns_dict = {(ind + ' (' + val.name + ')'): ind for ind, val in df.dtypes.iteritems()}
-			var_group_label = df_columns_dict[st.selectbox('Group label', df_columns_types)]
-			col1, col2 = st.beta_columns(2)
-			with col1:
-				var_group_name_1 = st.selectbox('Group name A', df[var_group_label].unique())
-			with col2:
-				var_group_name_2 = st.selectbox('Group name B', df[var_group_label].unique())
-			var_outcome = [df_columns_dict[var] for var in st.multiselect('Outcome variable: ', df_columns_types)]
-			col1, col2 = st.beta_columns([1, 1])
-			with col1:
-				conf_level = st.select_slider('Confidence level: ', ('0.90', '0.95', '0.99'))
-			with col2:
-				hypo_type = st.radio('Hypothesis type: ', ('One-sided', 'Two-sided'))
-			if_dropna = st.checkbox('Drop null values', value=True)
-			if_remove_outliers = st.checkbox('Remove outliers', value=False)
-			if if_remove_outliers:
-				outlier_lower_qtl, outlier_upper_qtl = st.slider(
-					'Quantiles (observations falling into the tails will be removed): ', min_value=0.0,
-					max_value=1.0, step=0.01, value=(0.0, 0.95))
-			# col1, col2 = st.beta_columns(2)
-			# with col1:
-			#     outlier_lower_qtl = st.slider('Lower quantile: ', min_value=0.0, max_value=0.25, step=0.01, value=0.0)
-			# with col2:
-			#     outlier_upper_qtl = st.slider('Upper quantile: ', min_value=0.75, max_value=1.00, step=0.01, value=0.99)
-			else:
-				outlier_lower_qtl, outlier_upper_qtl = None, None
-			if_data_description = st.checkbox('Show descriptive statistics', value=False)
-			if_apply = st.button('Confirm')
-
-	if uploaded_file is not None:
-		if if_apply:
-			if var_group_name_1 == var_group_name_2:
-				st.error('The names of Group A and Group B cannot be identical. ')
-				st.stop()
-			for col in var_outcome:
-				df = _process_data(df=df, col=col, if_dropna=if_dropna, if_remove_outliers=if_remove_outliers,
-								   outlier_lower_qtl=outlier_lower_qtl, outlier_upper_qtl=outlier_upper_qtl)
-			# Render hypothesis testing
-			with st.beta_expander('Hypothesis testing', expanded=True):
-				with st.spinner('Calculating...'):
-					df_group_1 = df[df[var_group_label] == var_group_name_1]
-					df_group_2 = df[df[var_group_label] == var_group_name_2]
-					for var in var_outcome:
-						st.markdown(f'`{var}`: {df[var].dtype}')
-						mu_1 = np.mean(df_group_1[var])
-						mu_2 = np.mean(df_group_2[var])
-						sigma_1 = np.std(df_group_1[var], ddof=1)
-						sigma_2 = np.std(df_group_2[var], ddof=1)
-						n_1 = len(df_group_1[var])
-						n_2 = len(df_group_2[var])
-
-						tstat, p_value, tstat_denom, pooled_sd, effect_size = scipy_ttest_ind_from_stats(
-							mu_1, mu_2, sigma_1, sigma_2, n_1, n_2)
-						observed_power = sm_tt_ind_solve_power(effect_size=effect_size, n1=n_1, n2=n_2,
-															   alpha=1 - float(conf_level), power=None,
-															   hypo_type=hypo_type, if_plot=False)
-
-						# Render the results
-						ttest_plot(mu_1, mu_2, sigma_1, sigma_2, conf_level, tstat, p_value, tstat_denom, hypo_type,
-								   observed_power)
-
-			# Render descriptive statistics
-			if if_data_description:
-				with st.beta_expander('Data descriptions', expanded=True):
-					with st.spinner('Processing data...'):
-						# if if_factorize:
-						#     df[var_hot_encoding] = df[var_hot_encoding].astype('category')
-						df = df[
-							(df[var_group_label] == var_group_name_1) | (df[var_group_label] == var_group_name_2)]
-						df_summary = df.groupby(by=var_group_label).describe(include='all')
-
-						# Plot distribution
+		if uploaded_file is not None:
+			if if_apply:
+				if var_group_name_1 == var_group_name_2:
+					st.error('The names of Group A and Group B cannot be identical. ')
+					st.stop()
+				for col in var_outcome:
+					df = _process_data(df=df, col=col, if_dropna=if_dropna, if_remove_outliers=if_remove_outliers,
+									   outlier_lower_qtl=outlier_lower_qtl, outlier_upper_qtl=outlier_upper_qtl)
+				# Render hypothesis testing
+				with st.beta_expander('Hypothesis testing', expanded=True):
+					with st.spinner('Calculating...'):
+						df_group_1 = df[df[var_group_label] == var_group_name_1]
+						df_group_2 = df[df[var_group_label] == var_group_name_2]
 						for var in var_outcome:
 							st.markdown(f'`{var}`: {df[var].dtype}')
-							st.table(df_summary[var].T.dropna())
-							fig_1 = sns.displot(data=df, x=var, col=var_group_label, kde=True)
-							fig_2 = sns.displot(data=df, kind="ecdf", x=var, hue=var_group_label, rug=True)
-							fig_3, ax = plt.subplots()
-							ax = sns.boxplot(data=df, y=var, hue=var_group_label)
-							st.pyplot(fig_1)
-							col1, col2 = st.beta_columns([1, 1.1])
-							with col1:
-								st.pyplot(fig_2)
-							with col2:
-								st.pyplot(fig_3)
-	return
+							mu_1 = np.mean(df_group_1[var])
+							mu_2 = np.mean(df_group_2[var])
+							sigma_1 = np.std(df_group_1[var], ddof=1)
+							sigma_2 = np.std(df_group_2[var], ddof=1)
+							n_1 = len(df_group_1[var])
+							n_2 = len(df_group_2[var])
+
+							tstat, p_value, tstat_denom, pooled_sd, effect_size = scipy_ttest_ind_from_stats(
+								mu_1, mu_2, sigma_1, sigma_2, n_1, n_2)
+							observed_power = sm_tt_ind_solve_power(effect_size=effect_size, n1=n_1, n2=n_2,
+																   alpha=1 - float(conf_level), power=None,
+																   hypo_type=hypo_type, if_plot=False)
+
+							# Render the results
+							ttest_plot(mu_1, mu_2, sigma_1, sigma_2, conf_level, tstat, p_value, tstat_denom, hypo_type,
+									   observed_power)
+
+				# Render descriptive statistics
+				if if_data_description:
+					with st.beta_expander('Data descriptions', expanded=True):
+						with st.spinner('Processing data...'):
+							# if if_factorize:
+							#     df[var_hot_encoding] = df[var_hot_encoding].astype('category')
+							df = df[
+								(df[var_group_label] == var_group_name_1) | (df[var_group_label] == var_group_name_2)]
+							df_summary = df.groupby(by=var_group_label).describe(include='all')
+
+							# Plot distribution
+							for var in var_outcome:
+								st.markdown(f'`{var}`: {df[var].dtype}')
+								st.table(df_summary[var].T.dropna())
+								fig_1 = sns.displot(data=df, x=var, col=var_group_label, kde=True)
+								fig_2 = sns.displot(data=df, kind="ecdf", x=var, hue=var_group_label, rug=True)
+								fig_3, ax = plt.subplots()
+								ax = sns.boxplot(data=df, y=var, hue=var_group_label)
+								st.pyplot(fig_1)
+								col1, col2 = st.beta_columns([1, 1.1])
+								with col1:
+									st.pyplot(fig_2)
+								with col2:
+									st.pyplot(fig_3)
+		return
 
 
 if __name__ == '__main__':

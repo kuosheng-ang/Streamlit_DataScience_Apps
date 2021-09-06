@@ -29,7 +29,7 @@ def make_downloadable_df(data):
     href = f'<a href="data:file/csv;base64,{b64}" download="{new_filename}">Click Here!</a>'
     st.markdown(href, unsafe_allow_html=True)
 
-def descriptive_analysis():
+def main():
 	"""Common ML Data Explorer """
 	# st.title("Common ML Dataset Explorer")
 	st.subheader("Time-Series Analysis App")

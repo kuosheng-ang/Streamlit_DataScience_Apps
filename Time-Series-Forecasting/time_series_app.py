@@ -52,19 +52,19 @@ def main():
 	# all_image = [Image.open(i) for i in img_list]
 	# st.image(all_image)
 
-	@st.cache(persist=True)
-	def load_data():
-		# folder_path = os.path.dirname('GI_data_modified.csv')
-		folder_path = Path(__file__).parents[0]
-		selected_filename = 'datasets/GI_data_modified.csv'
-		GI_df = pd.read_csv(os.path.join(folder_path, selected_filename))
-		return GI_df
+@st.cache(persist=True)
+def load_data():
+	# folder_path = os.path.dirname('GI_data_modified.csv')
+	folder_path = Path(__file__).parents[0]
+	selected_filename = 'datasets/GI_data_modified.csv'
+	GI_df = pd.read_csv(os.path.join(folder_path, selected_filename))
+	return GI_df
 
-	def preprocessing_data():
-		GI_Sales_Stats_Data = load_data()
-		GI_Sales_Stats_Data = GI_Sales_Stats_Data[['Package', 'Total Quantity', 'GI-Year Month']]
-		GI_Sales_Stats_Data['GI-Year Month'] = pd.to_datetime(GI_Sales_Stats_Data['GI-Year Month'])
-		return GI_Sales_Stats_Data
+def preprocessing_data():
+	GI_Sales_Stats_Data = load_data()
+	GI_Sales_Stats_Data = GI_Sales_Stats_Data[['Package', 'Total Quantity', 'GI-Year Month']]
+	GI_Sales_Stats_Data['GI-Year Month'] = pd.to_datetime(GI_Sales_Stats_Data['GI-Year Month'])
+	return GI_Sales_Stats_Data
 
 
 
@@ -553,7 +553,7 @@ def home(homepage_path, contact_path):
 		homepage = homepage.read().split('---Insert video---')
 		st.markdown(homepage[0], unsafe_allow_html=True)
 		contact_us_ui(contact_path, if_home=True)
-	
+
 def contact_us_ui(contact_path, if_home=False):
     if not if_home:
         st.write('# New Features 💡')
@@ -578,6 +578,7 @@ if __name__ == '__main__':
 	if side_menu_selectbox == 'Home':
 		home(homepage_path=os.path.join(image_folder_path,'doc/homepage.md'), contact_path=os.path.join(image_folder_path,'doc/contact.md'))
 	elif side_menu_selectbox == 'Descriptive Analysis':
+		preprocessing_data()
 		descriptive_analysis()
 	elif side_menu_selectbox == 'Predictive Analysis - ARIMA':
 		sub_menu_selectbox = st.sidebar.radio(

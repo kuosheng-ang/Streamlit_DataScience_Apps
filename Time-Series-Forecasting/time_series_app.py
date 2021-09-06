@@ -545,15 +545,17 @@ def upload_data_ui():
 								st.pyplot(fig_3)
 	return
 
-def home(homepage_path, contact_path):
-    '''The home page. '''
-    with open(homepage_path, 'r', encoding='utf-8') as homepage:
-        homepage = homepage.read().split('---Insert video---')
+	def home(homepage_path, contact_path):
+		'''The home page. '''
+		# with open(homepage_path, 'r', encoding='utf-8') as homepage:
+		#     homepage = homepage.read().split('---Insert video---')
+		with open(homepage_path, 'r', encoding='utf-8') as homepage:
+			homepage = homepage.read().split('---Insert video---')
+			st.markdown(homepage[0], unsafe_allow_html=True)
+		contact_us_ui(contact_path, if_home=True)
+		with st.beta_expander('Showcase', expanded=True):
+			st.text('Select on the sidebar for each section for different category/types of analysis -Descriptive and Predictive Analytics')
 
-	with st.beta_expander('Showcase', expanded=False):
-		st.text('Select on the sidebar for each section for different category/types of analysis - '
-				'Descriptive and Predictive Analytics')
-    contact_us_ui(contact_path, if_home=True)
 
 
 if __name__ == '__main__':

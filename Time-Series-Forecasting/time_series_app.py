@@ -569,7 +569,8 @@ if __name__ == '__main__':
 	side_menu_selectbox = st.sidebar.radio(
 		'Menu', ('Descriptive Analysis', 'Predictive Analysis - ARIMA', 'Predictive Analysis - FbProphet','Bayesian modeling and visualization - PyMC3'))
 	if side_menu_selectbox == 'Descriptive Analysis':
-		home(homepage_path='/doc/homepage.md', contact_path='/doc/contact.md')
+
+		home(homepage_path=os.path.join(image_folder_path,'doc/homepage.md'), contact_path=os.path.join(image_folder_path,'doc/contact.md'))
 		descriptive_analysis()
 	elif side_menu_selectbox == 'Predictive Analysis - Model Comparison':
 		sub_menu_selectbox = st.sidebar.radio(

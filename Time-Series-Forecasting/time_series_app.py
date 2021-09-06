@@ -1,7 +1,9 @@
 import streamlit as st
-from pathlib import Path
+import plotly.express as px
+import plotly.graph_objects as go
 import os,glob
 import pandas as pd
+from pathlib import Path
 # import shutil
 # from PIL import Image
 # from zipfile import ZipFile
@@ -14,10 +16,23 @@ import matplotlib.pyplot as plt
 import seaborn as sns 
 
 
-def main():
+# DB Management
+import sqlite3
+sql_conn = sqlite3.connect('time_series_data.db')
 
-# 	st.title("Common ML Dataset Explorer")
-# 	st.subheader("Simple Time-Series Analysis App with Streamlit")
+# Fxn to Download
+def make_downloadable_df(data):
+    csvfile = data.to_csv(index=False)
+    b64 = base64.b64encode(csvfile.encode()).decode()  # B64 encoding
+    st.markdown("### ** Download CSV File ** ")
+    new_filename = "dataframe_extracted_data_result_{}.csv".format(timestr)
+    href = f'<a href="data:file/csv;base64,{b64}" download="{new_filename}">Click Here!</a>'
+    st.markdown(href, unsafe_allow_html=True)
+
+def descriptive_analysis():
+	"""Common ML Data Explorer """
+	# st.title("Common ML Dataset Explorer")
+	st.subheader("Time-Series Analysis App")
 
 	html_temp = """
 	<div style="background-color:tomato;"><p style="color:white;font-size:60px;"> Time Series Analysis</p></div>
@@ -27,15 +42,14 @@ def main():
 	# img_list = glob.glob("images/*.png")
 	# # st.write(img_list)
 	# # for i in img_list:
-	# 	c_image = Image.open(i)
+	# # 	c_image = Image.open(i)
 	# # 	st.image(i)
 	# all_image = [Image.open(i) for i in img_list]
 	# st.image(all_image)
 
 	@st.cache(persist=True)
 	def load_data():
-# 		folder_path = os.path.dirname('GI_data_modified.csv')
-# 		print(folder_path)
+		# folder_path = os.path.dirname('GI_data_modified.csv')
 		folder_path = Path(__file__).parents[0]
 		selected_filename = 'datasets/GI_data_modified.csv'
 		GI_df = pd.read_csv(os.path.join(folder_path, selected_filename))
@@ -89,32 +103,49 @@ def main():
 	st.subheader("Time-Series Data Visualization")
 	# Show Correlation Plots
 
+	col1, col2 = st.beta_columns([1, 1])
 	# Matplotlib Plot on each product category - Bar Chart
-	if st.checkbox("Bar Chart Plot "):
+	# if st.checkbox("Bar Chart Plot "):
+	with col2:
 		fig, ax = plt.subplots(figsize=(15, 8))
 		GI_Sales_stats_data = preprocessing_data()
 		product_sub_cat = GI_Sales_stats_data['Package'].unique()
 		selected_product_category = st.selectbox('Select Product Category:', product_sub_cat)
 		GI_Category_Shipment_df = GI_Sales_stats_data.loc[GI_Sales_stats_data['Package'] == selected_product_category]
 		ax = (GI_Category_Shipment_df.groupby(GI_Category_Shipment_df['GI-Year Month'].dt.strftime('%Y-%m'))['Total Quantity'].sum().plot.bar(figsize=(15, 6)))
-		ax.set_xlabel("GI Shipment Dates", fontsize=15)
+		ax.set_xlabel("Shipment Period (Y-M)", fontsize=15)
 		ax.set_ylabel("Units", fontsize=15)
-		ax.set_title("Chip Quantities shipment for " + selected_product_category + " package type ", fontsize=15)
+		ax.set_title("Shipment Quantities for " + selected_product_category + " package type ", fontsize=15)
 		st.pyplot(fig)
 
 	# Matplotlib Plot on each product category - line graph Chart
-	elif st.checkbox("Line Chart Plot "):
+	# elif st.checkbox("Line Chart Plot "):
+	with col1:
 		fig, ax = plt.subplots(figsize=(15, 8))
+		product_sub_cat = preprocessing_data(['Package']).unique()
 		GI_Sales_stats_data = preprocessing_data()
-		product_sub_cat = GI_Sales_stats_data['Package'].unique()
 		selected_product_category = st.selectbox('Select Product Category:', product_sub_cat)
 		GI_Category_Shipment_df = GI_Sales_stats_data.loc[GI_Sales_stats_data['Package'] == selected_product_category]
 		ax = (GI_Category_Shipment_df.groupby(GI_Category_Shipment_df['GI-Year Month'].dt.strftime('%Y-%m'))['Total Quantity'].sum().plot(kind='line', figsize=(15, 6)))
-		ax.set_xlabel("GI Shipment Dates", fontsize=15)
+		ax.set_xlabel("Shipment Period (Y-M)", fontsize=15)
 		ax.set_ylabel("Units", fontsize=15)
-		ax.set_title("Chip Quantities shipment for " + selected_product_category + " package type ", fontsize=15)
+		ax.set_title("Shipment Quantities for " + selected_product_category + " package type ", fontsize=15)
 		st.pyplot(fig)
 
+	with st.beta_expander('To View Dataframe? 👉'):
+		st.dataframe(GI_Category_Shipment_df.head(15))
+	with st.beta_expander("Save TO Database as SQL : "):
+		GI_Category_Shipment_df.to_sql(name='EmailsTable', con=conn, if_exists='append')
+		st.dataframe(GI_Category_Shipment_df)
+		make_downloadable_df(result_df)
+	with st.beta_expander("Save TO file 📩: "):
+		filenames = os.listdir(folder_path)
+		selected_filename = st.selectbox('Select file folder to save:', filenames)
+		dataformat = st.sidebar.selectbox("Save Data As", ["csv", "json"])
+		make_downloadable_df_format(GI_Category_Shipment_df, dataformat)
+
+
+def fbprophet():
 	# # Seaborn Plot
 	# if st.checkbox("Correlation Plot with Annotation[Seaborn]"):
 	# 	st.write(sns.heatmap(df.corr(),annot=True))
@@ -236,4 +267,19 @@ def main():
 
 
 if __name__ == '__main__':
-	main()
+
+	'''Add control flows to organize the UI sections. '''
+	folder_path = Path(__file__).parents[0]
+	st.sidebar.image(os.path.join(folder_path,'/image/Time-Series-Analysis.jpg'), width=200)
+	st.sidebar.write('')  # Line break
+	st.sidebar.header('Navigation Menu')
+	side_menu_selectbox = st.sidebar.radio(
+		'Menu', ('Descriptive Analysis', 'Predictive Analysis - ARIMA', 'Predictive Analysis - FbProphet','Bayesian modeling and visualization - PyMC3'))
+	if side_menu_selectbox == 'Descriptive Analysis':
+		home(homepage_path='/doc/homepage.md', contact_path='/doc/contact.md')
+		descriptive_analysis()
+	elif side_menu_selectbox == 'Predictive Analysis - Model Comparison':
+		sub_menu_selectbox = st.sidebar.radio(
+			'ARIMA', ('Exponential Smoothing (Holt Winter)', 'Double Exponential Smoothing'))
+		if sub_menu_selectbox == 'Predictive Analysis - FbProphet':
+			fbprophet()

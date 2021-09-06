@@ -141,17 +141,17 @@ def descriptive_analysis():
 		ax.set_title("Shipment Quantities for " + selected_product_category + " package type ", fontsize=15)
 		st.pyplot(fig)
 
-with st.beta_expander('To View Dataframe? 👉'):
-	st.dataframe(GI_Category_Shipment_df.head(15))
-with st.beta_expander("Save TO Database as SQL : "):
-	GI_Category_Shipment_df.to_sql(name='EmailsTable', con=sql_conn, if_exists='append')
-	st.dataframe(GI_Category_Shipment_df)
-	make_downloadable_df(result_df)
-with st.beta_expander("Save TO file 📩: "):
-	filenames = os.listdir(folder_path)
-	selected_filename = st.selectbox('Select file folder to save:', filenames)
-	dataformat = st.sidebar.selectbox("Save Data As", ["csv", "json"])
-	make_downloadable_df_format(GI_Category_Shipment_df, dataformat)
+	with st.beta_expander('To View Dataframe? 👉'):
+		st.dataframe(GI_Category_Shipment_df.head(15))
+	with st.beta_expander("Save TO Database as SQL : "):
+		GI_Category_Shipment_df.to_sql(name='EmailsTable', con=sql_conn, if_exists='append')
+		st.dataframe(GI_Category_Shipment_df)
+		make_downloadable_df(result_df)
+	with st.beta_expander("Save TO file 📩: "):
+		filenames = os.listdir(folder_path)
+		selected_filename = st.selectbox('Select file folder to save:', filenames)
+		dataformat = st.sidebar.selectbox("Save Data As", ["csv", "json"])
+		make_downloadable_df_format(GI_Category_Shipment_df, dataformat)
 
 
 	# # Seaborn Plot

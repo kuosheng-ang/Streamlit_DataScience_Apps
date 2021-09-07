@@ -256,7 +256,7 @@ def arima_model_fcast():
 
 				# plt.figure(figsize =(10,10))
 
-				ax_ArimaData_plot = ArimaData.plot(kind='line', colormap='tab20c',title= i + 'ARIMA forecast', rot=45)
+				ax_ArimaData_plot = ArimaData.plot(kind='line', colormap='tab20c',title= 'ARIMA forecast')
 				ax_ArimaData_plot.set_xlabel("GI Shipment Dates",fontsize=15)
 				ax_ArimaData_plot.set_ylabel("Units",fontsize=15)
 				st.pyplot(fig)

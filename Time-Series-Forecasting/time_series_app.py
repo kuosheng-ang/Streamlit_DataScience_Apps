@@ -5,7 +5,6 @@ import os,glob
 import pandas as pd
 from pathlib import Path
 import base64
-import tkinter as tk
 from tkinter import filedialog
 # import shutil
 # from PIL import Image

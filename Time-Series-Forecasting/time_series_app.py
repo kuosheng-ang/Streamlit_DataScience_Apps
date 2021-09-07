@@ -232,10 +232,10 @@ def arima_model_fcast():
 	ArimaFcastPerf = pd.DataFrame({'Models': Arima})
 	ArimaData = pd.DataFrame({'Period': full_period, 'Model': 'AutoRegressive Integrated Moving Average'})
 
-	for i in arima_df.columns:
+	for i in GI_df_forecasting_pvt.columns:
 			try:
 
-				train, test, full = train_test(arima_df[i])
+				train, test, full = train_test(GI_df_forecasting_pvt[i])
 
 				# Test model
 				model_pred = auto_arima(train, start_p=2, start_q=0, max_p=6, max_q=6,

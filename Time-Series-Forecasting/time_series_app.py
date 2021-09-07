@@ -257,7 +257,7 @@ def arima_model_fcast():
 				ax_ArimaData_plot = ArimaData[i].plot(kind='line', colormap='tab20c')
 				ax_ArimaData_plot.set_xlabel("Shipment Dates",fontsize=15)
 				ax_ArimaData_plot.set_ylabel("Quantity in (Units)",fontsize=15)
-				ax_ArimaData_plot.set_title('Shipment Quantity forecast for '+  substr(str(i),7,15) + '  using ARIMA model', fontsize=15)
+				ax_ArimaData_plot.set_title('Shipment Quantity forecast for '+  str(i) + '  using ARIMA model', fontsize=15)
 				st.pyplot(fig)
 
 			except:

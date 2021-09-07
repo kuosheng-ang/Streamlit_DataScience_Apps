@@ -10,6 +10,5 @@ statsmodels
 streamlit-analytics
 tkintertable==1.3.3
 tk
-pmdarima.arima
 Pmdarima
 pyramid-arima

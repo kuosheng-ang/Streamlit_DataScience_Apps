@@ -79,9 +79,8 @@ def load_data():
 def preprocessing_data():
 	GI_Sales_Stats_Data = load_data()
 	GI_Sales_Stats_Data = GI_Sales_Stats_Data[['Package', 'Total Quantity', 'GI-Year Month']]
-	GI_Sales_Stats_Data['GI-Year Month'] = pd.to_datetime(GI_Sales_Stats_Data['GI-Year Month'])
+	# GI_Sales_Stats_Data['GI-Year Month'] = pd.to_datetime(GI_Sales_Stats_Data['GI-Year Month'])
 	return GI_Sales_Stats_Data
-
 
 
 	#
@@ -218,10 +217,6 @@ def train_test(data):
     return train, test, data
 
 # create data for forecasting
-# start = GI_df_forecasting_pvt.index.tolist()[-6]
-# fcastperiods = 12  # forecast periods is subject to change by forecast users
-# full_period = [start + pd.DateOffset(months=x) for x in range(0,fcastperiods)]
-# list(full_period)
 
 
 
@@ -229,6 +224,11 @@ def arima_model_fcast():
 	# build function to run model for all columns
 
 	arima_df = predictive_analytics()
+	start = arima_df.index.tolist()[-6]
+	fcastperiods = 12  # forecast periods is subject to change by forecast users
+	full_period = [start + pd.DateOffset(months=x) for x in range(0,fcastperiods)]
+	list(full_period)
+
 	Arima = ['Arima']
 	ArimaFcastPerf = pd.DataFrame({'Models': Arima})
 	ArimaData = pd.DataFrame({'Period': full_period, 'Model': 'AutoRegressive Integrated Moving Average'})

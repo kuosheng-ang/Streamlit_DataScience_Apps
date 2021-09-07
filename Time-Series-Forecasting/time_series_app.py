@@ -234,7 +234,8 @@ def arima_model_fcast():
 
 	for i in GI_df_forecasting_pvt.columns:
 			try:
-
+				# plt.figure(figsize =(10,10))
+				fig, ax_ArimaData_plot = plt.subplots(figsize=(15, 8))
 				train, test, full = train_test(GI_df_forecasting_pvt[i])
 
 				# Test model
@@ -253,10 +254,9 @@ def arima_model_fcast():
 				forecast = np.round(model_fc.predict(n_periods=fcastperiods+6))
 				ArimaData[i] = forecast[-fcastperiods:]
 
-				# plt.figure(figsize =(10,10))
-				fig, ax_ArimaData_plot = plt.subplots(figsize=(15, 8))
 
-				ax_ArimaData_plot = ArimaData.plot(kind='line', colormap='tab20c',title= 'ARIMA forecast')
+
+				ax_ArimaData_plot = ArimaData[i].plot(kind='line', colormap='tab20c')
 				ax_ArimaData_plot.set_xlabel("Shipment Dates",fontsize=15)
 				ax_ArimaData_plot.set_ylabel("Quantity in (Units)",fontsize=15)
 				ax_ArimaData_plot.set_title('Shipment Quantity forecast for next 6 mths using ARIMA model', fontsize=15)

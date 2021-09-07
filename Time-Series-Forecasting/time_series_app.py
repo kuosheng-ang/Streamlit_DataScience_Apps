@@ -218,10 +218,10 @@ def train_test(data):
     return train, test, data
 
 # create data for forecasting
-start = GI_df_forecasting_pvt.index.tolist()[-6]
-fcastperiods = 12  # forecast periods is subject to change by forecast users
-full_period = [start + pd.DateOffset(months=x) for x in range(0,fcastperiods)]
-list(full_period)
+# start = GI_df_forecasting_pvt.index.tolist()[-6]
+# fcastperiods = 12  # forecast periods is subject to change by forecast users
+# full_period = [start + pd.DateOffset(months=x) for x in range(0,fcastperiods)]
+# list(full_period)
 
 
 

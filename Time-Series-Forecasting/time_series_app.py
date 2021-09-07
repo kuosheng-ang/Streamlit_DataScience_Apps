@@ -164,6 +164,10 @@ def descriptive_analysis():
 		st.pyplot(sns.displot(stats_df['Total Quantity']))
 
 	with st.beta_expander('To View Dataframe? 👉'):
+		GI_Sales_stats_data = preprocessing_data()
+		product_sub_cat = GI_Sales_stats_data['Package'].unique()
+		selected_product_category = st.selectbox('Select Product Category:', product_sub_cat)
+		GI_Category_Shipment_df = GI_Sales_stats_data.loc[GI_Sales_stats_data['Package'] == selected_product_category]
 		st.dataframe(GI_Category_Shipment_df.head(35))
 	# with st.beta_expander("Save TO Database : "):
 	# 	GI_Category_Shipment_df.to_sql(name='EmailsTable', con=sql_conn, if_exists='append')

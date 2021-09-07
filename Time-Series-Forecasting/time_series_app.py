@@ -150,9 +150,6 @@ def descriptive_analysis():
 		ax.set_title("Shipment Quantities for " + selected_product_category + " package type ", fontsize=15)
 		st.pyplot(fig)
 
-		# st.write('Product Package - ' + selected_product_category + ' - Kurtosis of normal distribution: {}'.format(stats.kurtosis(GI_Category_Shipment_df['Total Quantity'])))
-	    # st.write('Product Package - ' + selected_product_category + ' - Skewness of normal distribution: {}'.format(stats.skew(GI_Category_Shipment_df['Total Quantity'])))
-
 	# Matplotlib Plot on each product category - line graph Chart
 	elif st.checkbox("Line Chart Plot "):
 	# with col1:
@@ -215,15 +212,14 @@ def train_test(data):
     test = data[int(0.7*len(data)):]
     return train, test, data
 
-# create data for forecasting
-
-
+# create data for ARIMA forecasting
 
 def arima_model_fcast():
 	# build function to run model for all columns
 
 	arima_df = predictive_analytics()
-	start = arima_df.index.tolist()[-6]
+	# start = arima_df.index.tolist()[-6]
+	start = arima_df.tolist()[-6]
 	fcastperiods = 12  # forecast periods is subject to change by forecast users
 	full_period = [start + pd.DateOffset(months=x) for x in range(0,fcastperiods)]
 	list(full_period)

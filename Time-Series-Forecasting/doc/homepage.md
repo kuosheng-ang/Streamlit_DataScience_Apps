@@ -1,6 +1,6 @@
-# Times-Series Analysis 💪
+# Time-Series Analysis 💪
 
-## Times-Series Analysis on Sales Demand for Supply Chain Plannning
+## Time-Series Analysis on Sales Demand for Supply Chain Plannning
 
 
 

@@ -8,3 +8,5 @@ plotly-express==0.4.1
 scipy
 statsmodels
 streamlit-analytics
+base64
+tkinter

@@ -4,6 +4,9 @@ import plotly.graph_objects as go
 import os,glob
 import pandas as pd
 from pathlib import Path
+import base64
+import tkinter as tk
+from tkinter import filedialog
 # import shutil
 # from PIL import Image
 # from zipfile import ZipFile
@@ -14,22 +17,32 @@ import matplotlib
 matplotlib.use('Agg')# To Prevent Errors
 import matplotlib.pyplot as plt
 import seaborn as sns
-
 import sqlite3
 
 sql_conn = sqlite3.connect('time_series_data.db')
 
 
 # Fxn to Download
-def make_downloadable_df(data):
+def make_downloadable_df(data , selected_dirfolder, selected_filename):
     csvfile = data.to_csv(index=False)
     b64 = base64.b64encode(csvfile.encode()).decode()  # B64 encoding
     st.markdown("### ** Download CSV File ** ")
-    new_filename = "dataframe_extracted_data_result_{}.csv".format(timestr)
+    new_filename = "{}.csv".format(selected_filename)
     href = f'<a href="data:file/csv;base64,{b64}" download="{new_filename}">Click Here!</a>'
     st.markdown(href, unsafe_allow_html=True)
 
 
+# Fxn to Download Into A Format
+def make_downloadable_df_format(data,format_type="csv"):
+	if format_type == "csv":
+		datafile = data.to_csv(index=False)
+	elif format_type == "json":
+		datafile = data.to_json()
+	b64 = base64.b64encode(datafile.encode()).decode()  # B64 encoding
+	st.markdown("### ** Download File  📩 ** ")
+	new_filename = "{}.{}".format(timestr,format_type)
+	# href = f'<a href="data:file/{format_type};base64,{b64}" download="{new_filename}">Click Here!</a>'
+	st.markdown(href, unsafe_allow_html=True)
 
 
 def main():
@@ -37,10 +50,7 @@ def main():
 	# st.title("Common ML Dataset Explorer")
 	st.subheader("Time-Series Analysis App")
 
-	html_temp = """
-	<div style="background-color:tomato;"><p style="color:white;font-size:60px;"> Time Series Analysis</p></div>
-	"""
-	st.markdown(html_temp, unsafe_allow_html=True)
+
 
 	# img_list = glob.glob("images/*.png")
 	# # st.write(img_list)
@@ -54,7 +64,6 @@ def main():
 def load_data():
 	# DB Management
 
-	# folder_path = os.path.dirname('GI_data_modified.csv')
 	folder_path = Path(__file__).parents[0]
 	selected_filename = 'datasets/GI_data_modified.csv'
 	GI_df = pd.read_csv(os.path.join(folder_path, selected_filename))
@@ -108,9 +117,14 @@ def preprocessing_data():
 	# 	st.write(df.describe())
 def descriptive_analysis():
 
-	st.subheader("Time-Series Data Visualization")
-	# Show Correlation Plots
+	html_temp = """
+	<div style="background-color:tomato;"><p style="color:white;font-size:60px;"> Time-Series Descriptive Analysis</p></div>
+	"""
+	st.markdown(html_temp, unsafe_allow_html=True)
 
+	# Show Correlation Plots
+	st.icon('face')
+	st.subheader("choice of visualization plot")
 	# col1, col2 = st.beta_columns([1, 1])
 	# Matplotlib Plot on each product category - Bar Chart
 	if st.checkbox("Bar Chart Plot "):
@@ -130,8 +144,8 @@ def descriptive_analysis():
 	elif st.checkbox("Line Chart Plot "):
 	# with col1:
 		fig, ax = plt.subplots(figsize=(15, 8))
-		product_sub_cat = preprocessing_data(['Package']).unique()
 		GI_Sales_stats_data = preprocessing_data()
+		product_sub_cat = GI_Sales_stats_data['Package'].unique()
 		selected_product_category = st.selectbox('Select Product Category:', product_sub_cat)
 		GI_Category_Shipment_df = GI_Sales_stats_data.loc[GI_Sales_stats_data['Package'] == selected_product_category]
 		ax = (GI_Category_Shipment_df.groupby(GI_Category_Shipment_df['GI-Year Month'].dt.strftime('%Y-%m'))['Total Quantity'].sum().plot(kind='line', figsize=(15, 6)))
@@ -144,13 +158,17 @@ def descriptive_analysis():
 		st.dataframe(GI_Category_Shipment_df.head(35))
 	with st.beta_expander("Save TO Database : "):
 		GI_Category_Shipment_df.to_sql(name='EmailsTable', con=sql_conn, if_exists='append')
-		st.dataframe(GI_Category_Shipment_df)
-		make_downloadable_df(GI_Category_Shipment_df)
 	with st.beta_expander("Save TO file 📩: "):
-		filenames = os.listdir(folder_path)
-		selected_filename = st.selectbox('Select file folder to save:', filenames)
-		dataformat = st.sidebar.selectbox("Save Data As", ["csv", "json"])
-		make_downloadable_df_format(GI_Category_Shipment_df, dataformat)
+		# filenames = os.listdir(folder_path)
+		selected_dirfolder = st.text_input('Select file folder to save as csv:', filedialog.askdirectory(master=root))
+		selected_filename = st.text_input('Select file name to save as csv:')
+		make_downloadable_df(GI_Category_Shipment_df, selected_dirfolder, selected_filename)
+	with st.beta_expander("Upload file: "):
+		uploaded_file = st.file_uploader("Choose a CSV file", type='.csv')
+		if uploaded_file is not None:
+			with st.spinner('Loading data...'):
+				upload_file_df = _load_data(uploaded_file)
+			st.dataframe(upload_file_df)
 
 
 	# # Seaborn Plot
@@ -556,8 +574,8 @@ def home(homepage_path, contact_path):
 
 def contact_us_ui(contact_path, if_home=False):
     if not if_home:
-        st.write('# New Features 💡')
-        st.text_input('Send us suggestions', 'Write something...')
+        st.write('# New Features still working in progress 💡')
+        st.text_input('Send me suggestions to')
         if_send = st.button('Send')
         if if_send:
             st.success('Thank you:) Your suggestions have been received. ')

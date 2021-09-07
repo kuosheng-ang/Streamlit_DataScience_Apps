@@ -161,8 +161,7 @@ def descriptive_analysis():
 		selected_product_category = st.selectbox('Select Product Category:', product_sub_cat)
 		GI_Category_Shipment_df = GI_Sales_stats_data.loc[GI_Sales_stats_data['Package'] == selected_product_category]
 		stats_df = GI_Category_Shipment_df.groupby(GI_Category_Shipment_df['GI-Year Month'].dt.strftime('%Y-%m'))[['GI-Year Month','Total Quantity']].sum()
-		sns.displot(stats_df['Total Quantity'])
-		# st.pyplot(fig)
+		st.pyplot(sns.displot(stats_df['Total Quantity']))
 
 	with st.beta_expander('To View Dataframe? 👉'):
 		st.dataframe(GI_Category_Shipment_df.head(35))

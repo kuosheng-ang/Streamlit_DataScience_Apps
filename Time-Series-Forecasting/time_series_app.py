@@ -419,8 +419,8 @@ if __name__ == '__main__':
 			'Type of Predictive Model', ('ARIMA', 'Exponential Smoothing (Holt Winter)', 'Double Exponential Smoothing'))
 		if sub_menu_selectbox == 'ARIMA':
 			arima_model_fcast()
-	elif sub_menu_selectbox == 'Predictive Analysis - FbProphet':
-		fbprophet()
+		elif sub_menu_selectbox == 'Exponential Smoothing (Holt Winter)':
+			fbprophet()
 	elif sub_menu_selectbox == 'Upload Data':
 		upload_data_ui()
 

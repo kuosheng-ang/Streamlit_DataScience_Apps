@@ -156,13 +156,13 @@ def descriptive_analysis():
 		st.pyplot(fig)
 
 	elif st.checkbox("Distribution Plot"):
-		fig, ax = plt.subplots(figsize=(15, 8))
 		GI_Sales_stats_data = preprocessing_data()
 		product_sub_cat = GI_Sales_stats_data['Package'].unique()
 		selected_product_category = st.selectbox('Select Product Category:', product_sub_cat)
 		GI_Category_Shipment_df = GI_Sales_stats_data.loc[GI_Sales_stats_data['Package'] == selected_product_category]
-		ax = (GI_Category_Shipment_df.groupby(GI_Category_Shipment_df['GI-Year Month'].dt.strftime('%Y-%m'))['Total Quantity'].sum().plot.bar(figsize=(15, 6)))
-		sns.displot(ax['Total Quantity'])
+		stats_df = GI_Category_Shipment_df.groupby(GI_Category_Shipment_df['GI-Year Month'].dt.strftime('%Y-%m'))[['GI-Year Month','Total Quantity']].sum()
+		sns.displot(stats_df['Total Quantity'])
+		# st.pyplot(fig)
 
 	with st.beta_expander('To View Dataframe? 👉'):
 		st.dataframe(GI_Category_Shipment_df.head(35))

@@ -122,7 +122,6 @@ def descriptive_analysis():
 	st.markdown(html_temp, unsafe_allow_html=True)
 
 	# Show Correlation Plots
-	st.icon('face')
 	st.subheader("choice of visualization plot")
 	# col1, col2 = st.beta_columns([1, 1])
 	# Matplotlib Plot on each product category - Bar Chart
@@ -589,7 +588,6 @@ if __name__ == '__main__':
 	st.sidebar.image(os.path.join(image_folder_path,'image/Time-Series-Analysis.jpg'), width=280)
 	st.sidebar.write('')  # Line break
 	st.sidebar.header('Navigation Menu')
-	main()
 	side_menu_selectbox = st.sidebar.radio(
 		'Menu', ('Home','Descriptive Analysis', 'Predictive Analysis - ARIMA', 'Predictive Analysis - FbProphet','Bayesian modeling and visualization - PyMC3'))
 	if side_menu_selectbox == 'Home':

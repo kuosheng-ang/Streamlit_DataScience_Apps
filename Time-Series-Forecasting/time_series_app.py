@@ -232,7 +232,7 @@ def arima_model_fcast():
 	Arima = ['Arima']
 	ArimaFcastPerf = pd.DataFrame({'Models': Arima})
 	ArimaData = pd.DataFrame({'Period': full_period, 'Model': 'AutoRegressive Integrated Moving Average'})
-
+	st.dataframe(ArimaData)
 	for i in arima_df.columns:
 			try:
 				fig, ax_ArimaData_plot = plt.subplots(figsize=(15, 8))

@@ -5,7 +5,7 @@ import os,glob
 import pandas as pd
 from pathlib import Path
 import base64
-from tkinter import filedialog
+# from tkinter import filedialog
 # import shutil
 # from PIL import Image
 # from zipfile import ZipFile
@@ -159,7 +159,7 @@ def descriptive_analysis():
 		GI_Category_Shipment_df.to_sql(name='EmailsTable', con=sql_conn, if_exists='append')
 	with st.beta_expander("Save TO file 📩: "):
 		# filenames = os.listdir(folder_path)
-		selected_dirfolder = st.text_input('Select file folder to save as csv:', filedialog.askdirectory(master=root))
+		# selected_dirfolder = st.text_input('Select file folder to save as csv:', filedialog.askdirectory(master=root))
 		selected_filename = st.text_input('Select file name to save as csv:')
 		make_downloadable_df(GI_Category_Shipment_df, selected_dirfolder, selected_filename)
 	with st.beta_expander("Upload file: "):

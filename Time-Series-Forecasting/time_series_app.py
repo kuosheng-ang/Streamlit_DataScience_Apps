@@ -122,9 +122,14 @@ def descriptive_analysis():
 	"""
 	st.markdown(html_temp, unsafe_allow_html=True)
 
-	# Show Correlation Plots
+	st.subheader("Pivot Chart Report of Aggregated Shipment Volume")
+	GI_df_forecasting_pvt = preprocessing_data()
+	GI_df_forecasting_pvt = GI_df_forecasting_pvt.loc[GI_df_forecasting_pvt['Total Quantity'] > 0]
+	GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting_pvt, values=['Total Quantity'], index='GI-Year Month',
+										   columns='Package', aggfunc=np.sum)
+	st.dataframe(GI_df_forecasting_pvt)
 	st.subheader("choice of visualization plot")
-	# col1, col2 = st.beta_columns([1, 1])
+
 	# Matplotlib Plot on each product category - Bar Chart
 	if st.checkbox("Bar Chart Plot "):
 	# with col2:
@@ -331,7 +336,7 @@ if __name__ == '__main__':
 	st.sidebar.write('')  # Line break
 	st.sidebar.header('Navigation Menu')
 	side_menu_selectbox = st.sidebar.radio(
-		'Menu', ('Home','Descriptive Analysis', 'Predictive Analysis - ARIMA', 'Predictive Analysis - FbProphet','Bayesian modeling and visualization - PyMC3'))
+		'Menu', ('Home','Descriptive Analysis', 'Predictive Analysis - ARIMA', 'Bayesian modeling and visualization - PyMC3'))
 	if side_menu_selectbox == 'Home':
 		home(homepage_path=os.path.join(image_folder_path,'doc/homepage.md'), contact_path=os.path.join(image_folder_path,'doc/contact.md'))
 	elif side_menu_selectbox == 'Descriptive Analysis':

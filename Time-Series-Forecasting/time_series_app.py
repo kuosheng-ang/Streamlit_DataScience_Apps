@@ -79,7 +79,7 @@ def load_data():
 def preprocessing_data():
 	GI_Sales_Stats_Data = load_data()
 	GI_Sales_Stats_Data = GI_Sales_Stats_Data[['Package', 'Total Quantity', 'GI-Year Month']]
-	# GI_Sales_Stats_Data['GI-Year Month'] = pd.to_datetime(GI_Sales_Stats_Data['GI-Year Month'])
+	GI_Sales_Stats_Data['GI-Year Month'] = pd.to_datetime(GI_Sales_Stats_Data['GI-Year Month'])
 	return GI_Sales_Stats_Data
 
 
@@ -232,38 +232,38 @@ def arima_model_fcast():
 	Arima = ['Arima']
 	ArimaFcastPerf = pd.DataFrame({'Models': Arima})
 	ArimaData = pd.DataFrame({'Period': full_period, 'Model': 'AutoRegressive Integrated Moving Average'})
-	st.dataframe(ArimaData)
-	# for i in arima_df.columns:
-	# 		try:
-	# 			fig, ax_ArimaData_plot = plt.subplots(figsize=(15, 8))
-	# 			train, test, full = train_test(arima_df[i])
-	#
-	# 			# Test model
-	# 			model_pred = auto_arima(train, start_p=2, start_q=0, max_p=6, max_q=6,
-	# 									m=1, seasonal=False, trace=True,
-	# 									error_action='ignore', suppress_warnings=True)
-	# 			model_pred.fit(train)
-	# 			pred = np.round(model_pred.predict(n_periods=len(test)))
-	# 			ArimaFcastPerf[i] = sqrt(mean_squared_error(test,pred))
-	#
-	# 			# Forecast model
-	# 			model_fc = auto_arima(full, start_p=2, start_q=0, max_p=6, max_q=6,
-	# 									m=1, seasonal=False, trace=True,
-	# 									error_action='ignore', suppress_warnings=True)
-	# 			model_fc.fit(full)
-	# 			forecast = np.round(model_fc.predict(n_periods=fcastperiods+6))
-	# 			ArimaData[i] = forecast[-fcastperiods:]
-	#
-	# 			# plt.figure(figsize =(10,10))
-	#
-	# 			ax_ArimaData_plot = ArimaData.plot(kind='line', colormap='tab20c',title= 'ARIMA forecast')
-	# 			ax_ArimaData_plot.set_xlabel("Shipment Dates",fontsize=15)
-	# 			ax_ArimaData_plot.set_ylabel("Quantity in (Units)",fontsize=15)
-	# 			ax_ArimaData_plot.set_title('Shipment Quantity forecast for next 6 mths using ARIMA model', fontsize=15)
-	# 			st.pyplot(fig)
-	# 		except:
-	# 			ArimaFcastPerf[i] = np.nan
-	# 			ArimaData[i] = np.nan
+
+	for i in arima_df.columns:
+			try:
+				fig, ax_ArimaData_plot = plt.subplots(figsize=(15, 8))
+				train, test, full = train_test(arima_df[i])
+
+				# Test model
+				model_pred = auto_arima(train, start_p=2, start_q=0, max_p=6, max_q=6,
+										m=1, seasonal=False, trace=True,
+										error_action='ignore', suppress_warnings=True)
+				model_pred.fit(train)
+				pred = np.round(model_pred.predict(n_periods=len(test)))
+				ArimaFcastPerf[i] = sqrt(mean_squared_error(test,pred))
+
+				# Forecast model
+				model_fc = auto_arima(full, start_p=2, start_q=0, max_p=6, max_q=6,
+										m=1, seasonal=False, trace=True,
+										error_action='ignore', suppress_warnings=True)
+				model_fc.fit(full)
+				forecast = np.round(model_fc.predict(n_periods=fcastperiods+6))
+				ArimaData[i] = forecast[-fcastperiods:]
+
+				# plt.figure(figsize =(10,10))
+
+				ax_ArimaData_plot = ArimaData.plot(kind='line', colormap='tab20c',title= 'ARIMA forecast')
+				ax_ArimaData_plot.set_xlabel("Shipment Dates",fontsize=15)
+				ax_ArimaData_plot.set_ylabel("Quantity in (Units)",fontsize=15)
+				ax_ArimaData_plot.set_title('Shipment Quantity forecast for next 6 mths using ARIMA model', fontsize=15)
+				st.pyplot(fig)
+			except:
+				ArimaFcastPerf[i] = np.nan
+				ArimaData[i] = np.nan
 
 		# return ArimaFcastPerf, ArimaData
 

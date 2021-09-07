@@ -233,37 +233,37 @@ def arima_model_fcast():
 	ArimaFcastPerf = pd.DataFrame({'Models': Arima})
 	ArimaData = pd.DataFrame({'Period': full_period, 'Model': 'AutoRegressive Integrated Moving Average'})
 	st.dataframe(ArimaData)
-	for i in arima_df.columns:
-			try:
-				fig, ax_ArimaData_plot = plt.subplots(figsize=(15, 8))
-				train, test, full = train_test(arima_df[i])
-
-				# Test model
-				model_pred = auto_arima(train, start_p=2, start_q=0, max_p=6, max_q=6,
-										m=1, seasonal=False, trace=True,
-										error_action='ignore', suppress_warnings=True)
-				model_pred.fit(train)
-				pred = np.round(model_pred.predict(n_periods=len(test)))
-				ArimaFcastPerf[i] = sqrt(mean_squared_error(test,pred))
-
-				# Forecast model
-				model_fc = auto_arima(full, start_p=2, start_q=0, max_p=6, max_q=6,
-										m=1, seasonal=False, trace=True,
-										error_action='ignore', suppress_warnings=True)
-				model_fc.fit(full)
-				forecast = np.round(model_fc.predict(n_periods=fcastperiods+6))
-				ArimaData[i] = forecast[-fcastperiods:]
-
-				# plt.figure(figsize =(10,10))
-
-				ax_ArimaData_plot = ArimaData.plot(kind='line', colormap='tab20c',title= 'ARIMA forecast')
-				ax_ArimaData_plot.set_xlabel("Shipment Dates",fontsize=15)
-				ax_ArimaData_plot.set_ylabel("Quantity in (Units)",fontsize=15)
-				ax_ArimaData_plot.set_title('Shipment Quantity forecast for next 6 mths using ARIMA model', fontsize=15)
-				st.pyplot(fig)
-			except:
-				ArimaFcastPerf[i] = np.nan
-				ArimaData[i] = np.nan
+	# for i in arima_df.columns:
+	# 		try:
+	# 			fig, ax_ArimaData_plot = plt.subplots(figsize=(15, 8))
+	# 			train, test, full = train_test(arima_df[i])
+	#
+	# 			# Test model
+	# 			model_pred = auto_arima(train, start_p=2, start_q=0, max_p=6, max_q=6,
+	# 									m=1, seasonal=False, trace=True,
+	# 									error_action='ignore', suppress_warnings=True)
+	# 			model_pred.fit(train)
+	# 			pred = np.round(model_pred.predict(n_periods=len(test)))
+	# 			ArimaFcastPerf[i] = sqrt(mean_squared_error(test,pred))
+	#
+	# 			# Forecast model
+	# 			model_fc = auto_arima(full, start_p=2, start_q=0, max_p=6, max_q=6,
+	# 									m=1, seasonal=False, trace=True,
+	# 									error_action='ignore', suppress_warnings=True)
+	# 			model_fc.fit(full)
+	# 			forecast = np.round(model_fc.predict(n_periods=fcastperiods+6))
+	# 			ArimaData[i] = forecast[-fcastperiods:]
+	#
+	# 			# plt.figure(figsize =(10,10))
+	#
+	# 			ax_ArimaData_plot = ArimaData.plot(kind='line', colormap='tab20c',title= 'ARIMA forecast')
+	# 			ax_ArimaData_plot.set_xlabel("Shipment Dates",fontsize=15)
+	# 			ax_ArimaData_plot.set_ylabel("Quantity in (Units)",fontsize=15)
+	# 			ax_ArimaData_plot.set_title('Shipment Quantity forecast for next 6 mths using ARIMA model', fontsize=15)
+	# 			st.pyplot(fig)
+	# 		except:
+	# 			ArimaFcastPerf[i] = np.nan
+	# 			ArimaData[i] = np.nan
 
 		# return ArimaFcastPerf, ArimaData
 
@@ -415,7 +415,7 @@ if __name__ == '__main__':
 		home(homepage_path=os.path.join(image_folder_path,'doc/homepage.md'), contact_path=os.path.join(image_folder_path,'doc/contact.md'))
 	elif side_menu_selectbox == 'Descriptive Analysis':
 		descriptive_analysis()
-	elif side_menu_selectbox == 'Predictive Analysis':
+	elif side_menu_selectbox == 'Predictive Analysis - ARIMA':
 		sub_menu_selectbox = st.sidebar.radio(
 			'Type of Predictive Model', ('ARIMA', 'Exponential Smoothing (Holt Winter)', 'Double Exponential Smoothing'))
 		if sub_menu_selectbox == 'ARIMA':

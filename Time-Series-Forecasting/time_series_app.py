@@ -217,16 +217,16 @@ def train_test(data):
 def arima_model_fcast():
 	# build function to run model for all columns
 
-	GI_df_forecasting_pvt = preprocessing_data()
-	GI_df_forecasting_pvt = GI_df_forecasting_pvt.loc[GI_df_forecasting_pvt['Total Quantity'] > 0]
-	GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting_pvt, values=['Total Quantity'], index='GI-Year Month',columns='Package', aggfunc=np.sum)
+	GI_df_forecasting = preprocessing_data()
+	GI_df_forecasting = GI_df_forecasting.loc[GI_df_forecasting_pvt['Total Quantity'] > 0]
+	GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting, values=['Total Quantity'], index='GI-Year Month',columns='Package', aggfunc=np.sum)
 
 	# start = arima_df.index.tolist()[-6]
 	start = GI_df_forecasting_pvt.index.tolist()[-6]
 	fcastperiods = 12  # forecast periods is subject to change by forecast users
 	full_period = [start + pd.DateOffset(months=x) for x in range(0,fcastperiods)]
 	list(full_period)
-	st.dataframe(arima_df)
+	st.dataframe(GI_df_forecasting_pvt)
 
 	Arima = ['Arima']
 	ArimaFcastPerf = pd.DataFrame({'Models': Arima})

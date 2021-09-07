@@ -166,7 +166,7 @@ def descriptive_analysis():
 		if uploaded_file is not None:
 			with st.spinner('Loading data...'):
 				upload_file_df = _load_data(uploaded_file)
-		st.dataframe(upload_file_df)
+			st.dataframe(upload_file_df)
 
 
 	# # Seaborn Plot

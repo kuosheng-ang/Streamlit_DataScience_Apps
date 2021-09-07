@@ -127,7 +127,7 @@ def descriptive_analysis():
 	GI_df_forecasting_pvt = preprocessing_data()
 	GI_df_forecasting_pvt = GI_df_forecasting_pvt.loc[GI_df_forecasting_pvt['Total Quantity'] > 0]
 	GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting_pvt, values=['Total Quantity'], index='GI-Year Month',
-										   columns='Package', aggfunc='{:,}'.format(np.sum))
+										   columns='Package', aggfunc=np.sum)
 	st.dataframe(GI_df_forecasting_pvt)
 	st.subheader("choice of visualization plot")
 

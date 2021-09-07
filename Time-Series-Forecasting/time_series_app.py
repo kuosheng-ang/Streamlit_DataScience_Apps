@@ -219,7 +219,7 @@ def arima_model_fcast():
 
 	arima_df = predictive_analytics()
 	# start = arima_df.index.tolist()[-6]
-	start = arima_df.tolist()[-6]
+	start = arima_df.index.tolist()[-6]
 	fcastperiods = 12  # forecast periods is subject to change by forecast users
 	full_period = [start + pd.DateOffset(months=x) for x in range(0,fcastperiods)]
 	list(full_period)

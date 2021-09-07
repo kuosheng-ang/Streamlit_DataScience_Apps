@@ -11,4 +11,3 @@ streamlit-analytics
 tkintertable==1.3.3
 tk
 Pmdarima
-pyramid-arima

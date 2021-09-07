@@ -20,8 +20,14 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import sqlite3
 
-sql_conn = sqlite3.connect('time_series_data.db')
+#predictive modelling
+from pmdarima.arima import auto_arima
+from math import sqrt
+import pandas as pd
+from sklearn.metrics import mean_squared_error
 
+
+sql_conn = sqlite3.connect('time_series_data.db')
 
 # Fxn to Download
 def make_downloadable_df(data , selected_dirfolder, selected_filename):
@@ -194,6 +200,71 @@ def descriptive_analysis():
 				upload_file_df = _load_data(uploaded_file)
 			st.dataframe(upload_file_df)   # dont adjust anything
 
+def predictive_analytics():
+
+	GI_df_forecasting_pvt = preprocessing_data()
+	GI_df_forecasting_pvt = GI_df_forecasting_pvt.loc[GI_df_forecasting_pvt['Total Quantity'] > 0]
+	GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting_pvt, values=['Total Quantity'], index='GI-Year Month',
+										   columns='Package', aggfunc=np.sum)
+	GI_df_forecasting_pvt
+
+
+def train_test(data):
+    myList = data.tolist()
+    i = myList.index(next(filter(lambda x: x!=0, myList)))
+    data = data.iloc[i:,]
+    train = data[:int(0.75*(len(data)))]
+    test = data[int(0.75*len(data)):]
+    return train, test, data
+
+# create data for forecasting
+start = GI_df_forecasting_pvt.index.tolist()[-6]
+fcastperiods = 12  # forecast periods is subject to change by forecast users
+full_period = [start + pd.DateOffset(months=x) for x in range(0,fcastperiods)]
+list(full_period)
+
+
+
+def arima_model_fcast():
+	# build function to run model for all columns
+
+	arima_df = predictive_analytics()
+	Arima = ['Arima']
+	ArimaFcastPerf = pd.DataFrame({'Models': Arima})
+	ArimaData = pd.DataFrame({'Period': full_period, 'Model': 'AutoRegressive Integrated Moving Average'})
+
+	for i in arima_df.columns:
+			try:
+				train, test, full = train_test(arima_df[i])
+
+				# Test model
+				model_pred = auto_arima(train, start_p=0, start_q=0, max_p=6, max_q=6,
+										m=3, seasonal=False, trace=True,
+										error_action='ignore', suppress_warnings=True)
+				model_pred.fit(train)
+				pred = np.round(model_pred.predict(n_periods=len(test)))
+				ArimaFcastPerf[i] = sqrt(mean_squared_error(test,pred))
+
+				# Forecast model
+
+				model_fc = auto_arima(full, start_p=0, start_q=0, max_p=6, max_q=6,
+										m=3, seasonal=False, trace=True,
+										error_action='ignore', suppress_warnings=True)
+				model_fc.fit(full)
+				forecast = np.round(model_fc.predict(n_periods=fcastperiods+6))
+				ArimaData[i] = forecast[-fcastperiods:]
+
+				# plt.figure(figsize =(10,10))
+				# ax_ArimaData_plot = ArimaData.plot(kind='line', colormap='tab20c',title= i + 'ARIMA forecast', rot=45)
+				# ax_ArimaData_plot.set_xlabel("GI Shipment Dates",fontsize=15)
+				# ax_ArimaData_plot.set_ylabel("Units",fontsize=15)
+				# plt.show()
+			except:
+				ArimaFcastPerf[i] = np.nan
+				ArimaData[i] = np.nan
+
+		return ArimaFcastPerf, ArimaData
+
 
 
 def upload_data_ui():
@@ -342,9 +413,11 @@ if __name__ == '__main__':
 		home(homepage_path=os.path.join(image_folder_path,'doc/homepage.md'), contact_path=os.path.join(image_folder_path,'doc/contact.md'))
 	elif side_menu_selectbox == 'Descriptive Analysis':
 		descriptive_analysis()
-	elif side_menu_selectbox == 'Predictive Analysis - ARIMA':
+	elif side_menu_selectbox == 'Predictive Analysis':
 		sub_menu_selectbox = st.sidebar.radio(
-			'ARIMA', ('Exponential Smoothing (Holt Winter)', 'Double Exponential Smoothing'))
+			'Type of Predictive Model', ('ARIMA', 'Exponential Smoothing (Holt Winter)', 'Double Exponential Smoothing'))
+		if sub_menu_selectbox == 'ARIMA':
+			arima_model_fcast()
 	elif sub_menu_selectbox == 'Predictive Analysis - FbProphet':
 		fbprophet()
 	elif sub_menu_selectbox == 'Upload Data':

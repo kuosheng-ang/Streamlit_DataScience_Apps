@@ -203,8 +203,7 @@ def predictive_analytics():
 
 	GI_df_forecasting_pvt = preprocessing_data()
 	GI_df_forecasting_pvt = GI_df_forecasting_pvt.loc[GI_df_forecasting_pvt['Total Quantity'] > 0]
-	GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting_pvt, values=['Total Quantity'], index='GI-Year Month',
-										   columns='Package', aggfunc=np.sum)
+	GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting_pvt, values=['Total Quantity'], index='GI-Year Month',columns='Package', aggfunc=np.sum)
 	GI_df_forecasting_pvt
 
 
@@ -212,8 +211,8 @@ def train_test(data):
     myList = data.tolist()
     i = myList.index(next(filter(lambda x: x!=0, myList)))
     data = data.iloc[i:,]
-    train = data[:int(0.75*(len(data)))]
-    test = data[int(0.75*len(data)):]
+    train = data[:int(0.7*(len(data)))]
+    test = data[int(0.7*len(data)):]
     return train, test, data
 
 # create data for forecasting
@@ -235,7 +234,7 @@ def arima_model_fcast():
 
 	for i in arima_df.columns:
 			try:
-				fig, ax_ArimaData_plot = plt.subplots(figsize=(15, 8))
+
 				train, test, full = train_test(arima_df[i])
 
 				# Test model
@@ -255,6 +254,7 @@ def arima_model_fcast():
 				ArimaData[i] = forecast[-fcastperiods:]
 
 				# plt.figure(figsize =(10,10))
+				fig, ax_ArimaData_plot = plt.subplots(figsize=(15, 8))
 
 				ax_ArimaData_plot = ArimaData.plot(kind='line', colormap='tab20c',title= 'ARIMA forecast')
 				ax_ArimaData_plot.set_xlabel("Shipment Dates",fontsize=15)

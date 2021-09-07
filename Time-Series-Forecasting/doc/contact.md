@@ -17,10 +17,11 @@ The following features are expected to be released in future versions.
  
 
 ## Contact  
-I am fresh graduate in Business Analytics and open for employment opportunities in business (ie: supply chain) data science, analytics relative fields. 
+I am fresh graduate in Business Analytics and open for employment opportunities in business 
+(ie: supply chain) data science, analytics relative fields. 
 
-- [ANG KUO SHENG CLEMENT], _[Bachelor of Technology (Business Analytics)](https://scale.nus.edu.sg/programmes/undergraduate-programmes/btech-computing)_ at _The National University of Singapore_. 
-- ###Email: 
+- [ANG KUO SHENG CLEMENT], _[Bachelor of Technology (Business Analytics)](https://scale.nus.edu.sg/programmes/undergraduate-programmes/btech-computing)_ at _The National University of Singapore_.
+###Email: 
 kuosheng.ang@outlook.com
 ```
 Made with enthusiasm. 

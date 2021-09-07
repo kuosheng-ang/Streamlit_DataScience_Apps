@@ -421,8 +421,8 @@ if __name__ == '__main__':
 			arima_model_fcast()
 		elif sub_menu_selectbox == 'Exponential Smoothing (Holt Winter)':
 			fbprophet()
-	elif sub_menu_selectbox == 'Upload Data':
-		upload_data_ui()
+		elif sub_menu_selectbox == 'Double Exponential Smoothing':
+			upload_data_ui()
 
 # # Seaborn Plot
 # if st.checkbox("Correlation Plot with Annotation[Seaborn]"):

@@ -235,7 +235,7 @@ def arima_model_fcast():
 
 	for i in arima_df.columns:
 			try:
-				fig, ax = plt.subplots(figsize=(15, 8))
+				fig, ax_ArimaData_plot = plt.subplots(figsize=(15, 8))
 				train, test, full = train_test(arima_df[i])
 
 				# Test model
@@ -257,8 +257,9 @@ def arima_model_fcast():
 				# plt.figure(figsize =(10,10))
 
 				ax_ArimaData_plot = ArimaData.plot(kind='line', colormap='tab20c',title= 'ARIMA forecast')
-				ax_ArimaData_plot.set_xlabel("GI Shipment Dates",fontsize=15)
-				ax_ArimaData_plot.set_ylabel("Units",fontsize=15)
+				ax_ArimaData_plot.set_xlabel("Shipment Dates",fontsize=15)
+				ax_ArimaData_plot.set_ylabel("Quantity in (Units)",fontsize=15)
+				ax_ArimaData_plot.set_title('Shipment Quantity forecast for next 6 mths using ARIMA model', fontsize=15)
 				st.pyplot(fig)
 			except:
 				ArimaFcastPerf[i] = np.nan

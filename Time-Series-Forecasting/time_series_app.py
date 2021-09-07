@@ -117,7 +117,7 @@ def preprocessing_data():
 def descriptive_analysis():
 
 	html_temp = """
-	<div style="background-color:tomato;"><p style="color:white;font-size:60px;"> Time-Series Descriptive Analysis</p></div>
+	<div style="background-color:tomato;"><p style="color:white;font-size:24px;"> Time-Series Descriptive Analysis</p></div>
 	"""
 	st.markdown(html_temp, unsafe_allow_html=True)
 
@@ -154,19 +154,19 @@ def descriptive_analysis():
 
 	with st.beta_expander('To View Dataframe? 👉'):
 		st.dataframe(GI_Category_Shipment_df.head(35))
-	with st.beta_expander("Save TO Database : "):
-		GI_Category_Shipment_df.to_sql(name='EmailsTable', con=sql_conn, if_exists='append')
-	with st.beta_expander("Save TO file 📩: "):
-		# filenames = os.listdir(folder_path)
-		# selected_dirfolder = st.text_input('Select file folder to save as csv:', filedialog.askdirectory(master=root))
-		selected_filename = st.text_input('Select file name to save as csv:')
-		make_downloadable_df(GI_Category_Shipment_df, selected_dirfolder, selected_filename)
+	# with st.beta_expander("Save TO Database : "):
+	# 	GI_Category_Shipment_df.to_sql(name='EmailsTable', con=sql_conn, if_exists='append')
+	# with st.beta_expander("Save TO file 📩: "):
+	# 	# filenames = os.listdir(folder_path)
+	# 	# selected_dirfolder = st.text_input('Select file folder to save as csv:', filedialog.askdirectory(master=root))
+	# 	selected_filename = st.text_input('Select file name to save as csv:')
+	# 	make_downloadable_df(GI_Category_Shipment_df, selected_dirfolder, selected_filename)
 	with st.beta_expander("Upload file: "):
 		uploaded_file = st.file_uploader("Choose a CSV file", type='.csv')
 		if uploaded_file is not None:
 			with st.spinner('Loading data...'):
 				upload_file_df = _load_data(uploaded_file)
-			st.dataframe(upload_file_df)
+		st.dataframe(upload_file_df)
 
 
 	# # Seaborn Plot

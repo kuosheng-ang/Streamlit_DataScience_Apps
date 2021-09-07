@@ -196,7 +196,7 @@ def descriptive_analysis():
 				upload_file_df = _load_data(uploaded_file)
 			st.dataframe(upload_file_df)   # dont adjust anything
 
-def predictive_analytics():
+# def predictive_analytics():
 
 	# GI_df_forecasting_pvt = preprocessing_data()
 	# GI_df_forecasting_pvt = GI_df_forecasting_pvt.loc[GI_df_forecasting_pvt['Total Quantity'] > 0]

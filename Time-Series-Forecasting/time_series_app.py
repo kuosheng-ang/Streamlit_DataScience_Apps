@@ -6,6 +6,7 @@ import pandas as pd
 from pathlib import Path
 import base64
 from scipy import stats
+import numpy as np
 # from tkinter import filedialog
 # import shutil
 # from PIL import Image

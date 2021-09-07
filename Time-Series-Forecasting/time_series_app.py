@@ -235,35 +235,36 @@ def arima_model_fcast():
 
 	for i in arima_df.columns:
 			try:
+				fig, ax = plt.subplots(figsize=(15, 8))
 				train, test, full = train_test(arima_df[i])
 
 				# Test model
-				model_pred = auto_arima(train, start_p=0, start_q=0, max_p=6, max_q=6,
-										m=3, seasonal=False, trace=True,
+				model_pred = auto_arima(train, start_p=2, start_q=0, max_p=6, max_q=6,
+										m=1, seasonal=False, trace=True,
 										error_action='ignore', suppress_warnings=True)
 				model_pred.fit(train)
 				pred = np.round(model_pred.predict(n_periods=len(test)))
 				ArimaFcastPerf[i] = sqrt(mean_squared_error(test,pred))
 
 				# Forecast model
-
-				model_fc = auto_arima(full, start_p=0, start_q=0, max_p=6, max_q=6,
-										m=3, seasonal=False, trace=True,
+				model_fc = auto_arima(full, start_p=2, start_q=0, max_p=6, max_q=6,
+										m=1, seasonal=False, trace=True,
 										error_action='ignore', suppress_warnings=True)
 				model_fc.fit(full)
 				forecast = np.round(model_fc.predict(n_periods=fcastperiods+6))
 				ArimaData[i] = forecast[-fcastperiods:]
 
 				# plt.figure(figsize =(10,10))
-				# ax_ArimaData_plot = ArimaData.plot(kind='line', colormap='tab20c',title= i + 'ARIMA forecast', rot=45)
-				# ax_ArimaData_plot.set_xlabel("GI Shipment Dates",fontsize=15)
-				# ax_ArimaData_plot.set_ylabel("Units",fontsize=15)
-				# plt.show()
+
+				ax_ArimaData_plot = ArimaData.plot(kind='line', colormap='tab20c',title= i + 'ARIMA forecast', rot=45)
+				ax_ArimaData_plot.set_xlabel("GI Shipment Dates",fontsize=15)
+				ax_ArimaData_plot.set_ylabel("Units",fontsize=15)
+				st.pyplot(fig)
 			except:
 				ArimaFcastPerf[i] = np.nan
 				ArimaData[i] = np.nan
 
-		return ArimaFcastPerf, ArimaData
+		# return ArimaFcastPerf, ArimaData
 
 
 

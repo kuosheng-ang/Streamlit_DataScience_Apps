@@ -13,14 +13,14 @@ import numpy as np
 # from zipfile import ZipFile
 # import pandas_profiling as pp
 
-# Data Viz Pkgs
+# Data Vizualization Package
 import matplotlib
 matplotlib.use('Agg')# To Prevent Errors
 import matplotlib.pyplot as plt
 import seaborn as sns
 import sqlite3
 
-#predictive modelling
+# Predictive modelling
 from pmdarima.arima import auto_arima
 from math import sqrt
 import pandas as pd
@@ -198,10 +198,10 @@ def descriptive_analysis():
 
 def predictive_analytics():
 
-	GI_df_forecasting_pvt = preprocessing_data()
-	GI_df_forecasting_pvt = GI_df_forecasting_pvt.loc[GI_df_forecasting_pvt['Total Quantity'] > 0]
-	GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting_pvt, values=['Total Quantity'], index='GI-Year Month',columns='Package', aggfunc=np.sum)
-	GI_df_forecasting_pvt
+	# GI_df_forecasting_pvt = preprocessing_data()
+	# GI_df_forecasting_pvt = GI_df_forecasting_pvt.loc[GI_df_forecasting_pvt['Total Quantity'] > 0]
+	# GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting_pvt, values=['Total Quantity'], index='GI-Year Month',columns='Package', aggfunc=np.sum)
+	# GI_df_forecasting_pvt
 
 
 def train_test(data):
@@ -217,9 +217,12 @@ def train_test(data):
 def arima_model_fcast():
 	# build function to run model for all columns
 
-	arima_df = predictive_analytics()
+	GI_df_forecasting_pvt = preprocessing_data()
+	GI_df_forecasting_pvt = GI_df_forecasting_pvt.loc[GI_df_forecasting_pvt['Total Quantity'] > 0]
+	GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting_pvt, values=['Total Quantity'], index='GI-Year Month',columns='Package', aggfunc=np.sum)
+
 	# start = arima_df.index.tolist()[-6]
-	start = arima_df.index.tolist()[-6]
+	start = GI_df_forecasting_pvt.index.tolist()[-6]
 	fcastperiods = 12  # forecast periods is subject to change by forecast users
 	full_period = [start + pd.DateOffset(months=x) for x in range(0,fcastperiods)]
 	list(full_period)

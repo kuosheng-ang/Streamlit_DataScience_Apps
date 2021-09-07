@@ -163,10 +163,9 @@ def descriptive_analysis():
 		GI_Category_Shipment_df = GI_Sales_stats_data.loc[GI_Sales_stats_data['Package'] == selected_product_category]
 		stats_df = GI_Category_Shipment_df.groupby(GI_Category_Shipment_df['GI-Year Month'].dt.strftime('%Y-%m'))[['GI-Year Month','Total Quantity']].sum()
 		st.pyplot(sns.displot(stats_df['Total Quantity']))
-		st.write('Product Package - ' + selected_product_category + ' - Kurtosis of normal distribution: {:2f}'.format(
-			stats.kurtosis(stats_df['Total Quantity'])))
-		st.write('Product Package - ' + selected_product_category + ' - Skewness of normal distribution: {:2f}'.format(
-			stats.skew(stats_df['Total Quantity'])))
+		st.write('Product Package - ' + selected_product_category)
+		st.write('Kurtosis of normal distribution: {:.2f}'.format(stats.kurtosis(stats_df['Total Quantity'])))
+		st.write('Skewness of normal distribution: {:.2f}'.format(stats.skew(stats_df['Total Quantity'])))
 
 
 	elif st.checkbox('To View Dataframe? 👉'):

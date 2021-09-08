@@ -252,8 +252,8 @@ def arima_model_fcast():
 		ARIMA_Data_Summary = ARIMA_Data_Summary.append(ARIMA_Data, ignore_index=True)
 
 
-ARIMA_Data_Summary = ARIMA_Data_Summary.applymap('{:,}'.format)
-st.dataframe(ARIMA_Data_Summary)
+	ARIMA_Data_Summary = ARIMA_Data_Summary.applymap('{:,}'.format)
+	st.dataframe(ARIMA_Data_Summary)
 
 def upload_data_ui():
 	'''The Two-sample Student's t-test - Continuous variables (upload data) section. '''

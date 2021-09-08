@@ -1,3 +1,8 @@
+#   Author: Ang Kuo Sheng Clement
+#   version 1.0
+#   Date:
+
+
 import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
@@ -25,7 +30,9 @@ from pmdarima.arima import auto_arima
 from math import sqrt
 import pandas as pd
 from sklearn.metrics import mean_squared_error
-
+from pmdarima.pipeline import Pipeline
+from pmdarima.preprocessing import BoxCoxEndogTransformer
+import pmdarima as pm
 
 sql_conn = sqlite3.connect('time_series_data.db')
 
@@ -39,7 +46,7 @@ def make_downloadable_df(data , selected_dirfolder, selected_filename):
     st.markdown(href, unsafe_allow_html=True)
 
 
-# Fxn to Download Into A Format
+# Fxn to Download into csv format
 def make_downloadable_df_format(data,format_type="csv"):
 	if format_type == "csv":
 		datafile = data.to_csv(index=False)
@@ -56,8 +63,6 @@ def main():
 	"""Common ML Data Explorer """
 	# st.title("Common ML Dataset Explorer")
 	st.subheader("Time-Series Analysis App")
-
-
 
 	# img_list = glob.glob("images/*.png")
 	# # st.write(img_list)
@@ -133,6 +138,7 @@ def descriptive_analysis():
 	GI_df_forecasting_pvt = GI_df_forecasting_pvt.loc[GI_df_forecasting_pvt['Total Quantity'] > 0]
 	GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting_pvt, values=['Total Quantity'], index='GI-Year Month',
 										   columns='Package', aggfunc=np.sum)
+	GI_df_forecasting_pvt = GI_df_forecasting_pvt.applymap('{:,}'.format)
 	st.dataframe(GI_df_forecasting_pvt)
 	st.subheader("choice of visualization plot")
 
@@ -201,72 +207,53 @@ def predictive_analytics():
 	GI_df_forecasting_pvt = preprocessing_data()
 	GI_df_forecasting_pvt = GI_df_forecasting_pvt.loc[GI_df_forecasting_pvt['Total Quantity'] > 0]
 	GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting_pvt, values=['Total Quantity'], index='GI-Year Month',columns='Package', aggfunc=np.sum)
-	GI_df_forecasting_pvt
-
+	GI_df_forecasting_pvt = GI_df_forecasting_pvt.applymap('{:,.2f}'.format)
+	return GI_df_forecasting_pvt
 
 def train_test(data):
-    myList = data.tolist()
-    i = myList.index(next(filter(lambda x: x!=0, myList)))
-    data = data.iloc[i:,]
+
     train = data[:int(0.7*(len(data)))]
     test = data[int(0.7*len(data)):]
-    return train, test, data
+    return train, test
 
-# create data for ARIMA forecasting
+
 
 def arima_model_fcast():
-	# build function to run model for all columns
 
-	GI_df_forecasting = preprocessing_data()
-	GI_df_forecasting = GI_df_forecasting.loc[GI_df_forecasting['Total Quantity'] > 0]
-	GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting, values=['Total Quantity'], index='GI-Year Month',columns='Package', aggfunc=np.sum)
+	# create data for ARIMA forecasting
+	ARIMA_Data_Summary = pd.DataFrame(columns=['Period', 'Model', 'Product Category', 'Demand Prediction (Units)'])
+	ARIMA_GI_SalesData = preprocessing_data()
+	ARIMA_product_sub_cat = ARIMA_GI_SalesData['Package'].unique()
+	ARIMA_GI_SalesData_df = ARIMA_GI_SalesData[['Package', 'Total Quantity', 'GI-Year Month']]
 
-	# start = arima_df.index.tolist()[-6]
-	start = GI_df_forecasting_pvt.index.tolist()[-6]
-	fcastperiods = 12  # forecast periods is subject to change by forecast users
-	full_period = [start + pd.DateOffset(months=x) for x in range(0,fcastperiods)]
-	list(full_period)
-	st.dataframe(GI_df_forecasting_pvt)
+	for i in ARIMA_product_sub_cat:
 
-	Arima = ['Arima']
-	ArimaFcastPerf = pd.DataFrame({'Models': Arima})
-	ArimaData = pd.DataFrame({'Period': full_period, 'Model': 'AutoRegressive Integrated Moving Average'})
+		ARIMA_GI_Sales_Package_data_df = ARIMA_GI_SalesData_df.loc[ARIMA_GI_SalesData_df['Package'] == i]
+		arima_GI_Sales_Package__df = ARIMA_GI_Sales_Package_data_df.groupby('GI-Year Month')['Total Quantity'].sum().reset_index()
+		arima_GI_Sales_Package__df.set_index('GI-Year Month', inplace=True)
 
-	for i in GI_df_forecasting_pvt.columns:
-			try:
-				# plt.figure(figsize =(10,10))
-				fig, ax_ArimaData_plot = plt.subplots(figsize=(15, 8))
-				train, test, full = train_test(GI_df_forecasting_pvt[i])
+		train, test = train_test(arima_GI_Sales_Package__df)
+		start = train.index.tolist()[-6]
+		fcastperiods = 12  # forecast periods is subject to change by forecast users
+		full_period_arima = [start + pd.DateOffset(months=x) for x in range(0,fcastperiods)]
+		list(full_period_arima)
 
-				# Test model
-				model_pred = auto_arima(train, start_p=2, start_q=0, max_p=6, max_q=6,
-										m=1, seasonal=False, trace=True,
-										error_action='ignore', suppress_warnings=True)
-				model_pred.fit(train)
-				pred = np.round(model_pred.predict(n_periods=len(test)))
-				ArimaFcastPerf[i] = sqrt(mean_squared_error(test,pred))
-
-				# Forecast model
-				model_fc = auto_arima(full, start_p=2, start_q=0, max_p=6, max_q=6,
-										m=1, seasonal=False, trace=True,
-										error_action='ignore', suppress_warnings=True)
-				model_fc.fit(full)
-				forecast = np.round(model_fc.predict(n_periods=fcastperiods+6))
-				ArimaData[i] = forecast[-fcastperiods:]
-
-				ax_ArimaData_plot = ArimaData[i].plot(kind='line', colormap='tab20c')
-				ax_ArimaData_plot.set_xlabel("Shipment Dates",fontsize=15)
-				ax_ArimaData_plot.set_ylabel("Quantity in (Units)",fontsize=15)
-				ax_ArimaData_plot.set_title('Shipment Quantity forecast for '+  str(i) + '  using ARIMA model', fontsize=15)
-				st.pyplot(fig)
-
-			except:
-				ArimaFcastPerf[i] = np.nan
-				ArimaData[i] = np.nan
-
-		# return ArimaFcastPerf, ArimaData
+		# build function to run model for all columns
+		arima_model_pipeline = Pipeline([
+			('boxcox', BoxCoxEndogTransformer(lmbda2=1e-6)),
+			('arima', pm.AutoARIMA(seasonal=False, m=0,
+								   suppress_warnings=True,
+								   trace=True))])
+		arima_model_pipeline.fit(train)
+		arima_forecast = np.round(arima_model_pipeline.predict(n_periods=fcastperiods))
+		ARIMA_Data = pd.DataFrame(
+			{'Period': full_period_arima, 'Model': 'AutoRegressive Integrated Moving Average', 'Product Category': i,
+			 'Demand Prediction (Units)': arima_forecast[-fcastperiods:]}, )
+		ARIMA_Data_Summary = ARIMA_Data_Summary.append(ARIMA_Data, ignore_index=True)
 
 
+ARIMA_Data_Summary = ARIMA_Data_Summary.applymap('{:,}'.format)
+st.dataframe(ARIMA_Data_Summary)
 
 def upload_data_ui():
 	'''The Two-sample Student's t-test - Continuous variables (upload data) section. '''

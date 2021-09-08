@@ -221,7 +221,7 @@ def train_test(data):
 def arima_model_fcast():
 
 	# create data for ARIMA forecasting
-	ARIMA_Data_Summary = pd.DataFrame(columns=['Period', 'Model', 'Product Category', 'Demand Prediction (Units)'])
+	ARIMA_Data_Summary = pd.DataFrame(columns=['GI Shipment Month', 'Model', 'Product Category', 'Demand Prediction (Units)'])
 	ARIMA_GI_SalesData = preprocessing_data()
 	ARIMA_product_sub_cat = ARIMA_GI_SalesData['Package'].unique()
 	ARIMA_GI_SalesData_df = ARIMA_GI_SalesData[['Package', 'Total Quantity', 'GI-Year Month']]

@@ -249,13 +249,13 @@ def arima_model_fcast():
 		ARIMA_Data = pd.DataFrame(
 			{'GI Shipment Month': full_period_arima, 'Model': 'AutoRegressive Integrated Moving Average', 'Product Category': i,
 			 'Demand Prediction (Units)': arima_forecast[-fcastperiods:]} )
-
-		arima_forecast_plot = sns.barplot(data=ARIMA_Data, x="GI Shipment Month", y="Demand Prediction (Units)", hue="Product Category")
-		# arima_forecast_plot.set_title("Shipment forecast for each product category")
-		st.pyplot(arima_forecast_plot)
 		ARIMA_Data_Summary = ARIMA_Data_Summary.append(ARIMA_Data, ignore_index=True)
+		
+	arima_forecast_plot = sns.barplot(data=ARIMA_Data_Summary, x="GI Shipment Month", y="Demand Prediction (Units)",
+										  hue="Product Category")
+	# arima_forecast_plot.set_title("Shipment forecast for each product category")
 
-
+	st.pyplot(arima_forecast_plot)
 	# ARIMA_Data_Summary_format = ARIMA_Data_Summary.applymap('{:,.2f}'.format)
 	st.subheader(" Forecast dataframe for future demand using ARIMA")
 	st.dataframe(ARIMA_Data_Summary)

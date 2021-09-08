@@ -260,7 +260,7 @@ def arima_model_fcast():
 	st.subheader(" Forecast dataframe for future demand using ARIMA")
 
 	with st.beta_expander('To View Dataframe', expanded=True):
-		ARIMA_Data_Summary_format = ARIMA_Data_Summary.applymap('{:,.2f}'.format)
+		# ARIMA_Data_Summary_format = ARIMA_Data_Summary.applymap('{:,.2f}'.format)
 		st.dataframe(ARIMA_Data_Summary)
 
 def upload_data_ui():

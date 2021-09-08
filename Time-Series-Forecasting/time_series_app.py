@@ -252,7 +252,7 @@ def arima_model_fcast():
 		ARIMA_Data_Summary = ARIMA_Data_Summary.append(ARIMA_Data, ignore_index=True)
 
 
-	ARIMA_Data_Summary = ARIMA_Data_Summary.applymap('{:,2f}'.format)
+	ARIMA_Data_Summary = ARIMA_Data_Summary.applymap('{:,.2f}'.format)
 	st.dataframe(ARIMA_Data_Summary)
 
 def upload_data_ui():

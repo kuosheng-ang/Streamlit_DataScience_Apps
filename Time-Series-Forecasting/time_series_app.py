@@ -415,12 +415,12 @@ if __name__ == '__main__':
 			'Type of Predictive Model', ('ARIMA', 'Exponential Smoothing (Holt Winter)', 'Double Exponential Smoothing'))
 		if sub_menu_selectbox == 'ARIMA':
 			arima_model_fcast()
-		elif sub_menu_selectbox == 'Exponential Smoothing (Holt Winter)':
-			holt_winter()
-			st.write("Work in Progress... Sorry ")
-		elif sub_menu_selectbox == 'Double Exponential Smoothing':
-			DES_forecast()
-			st.write("Work in Progress... Sorry ")
+		# elif sub_menu_selectbox == 'Exponential Smoothing (Holt Winter)':
+		# 	holt_winter()
+		# 	st.write("Work in Progress... Sorry ")
+		# elif sub_menu_selectbox == 'Double Exponential Smoothing':
+		# 	DES_forecast()
+		# 	st.write("Work in Progress... Sorry ")
 
 # # Seaborn Plot
 # if st.checkbox("Correlation Plot with Annotation[Seaborn]"):

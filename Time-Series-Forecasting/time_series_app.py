@@ -251,10 +251,11 @@ def arima_model_fcast():
 			 'Demand Prediction (Units)': arima_forecast[-fcastperiods:]} )
 		ARIMA_Data_Summary = ARIMA_Data_Summary.append(ARIMA_Data, ignore_index=True)
 
-	# arima_forecast_plot = sns.lineplot(x="GI Shipment Month", y="Demand Prediction (Units)",
-	# 									  data=ARIMA_Data_Summary)
-	# arima_forecast_plot.set_title("Shipment forecast for each product category")
-	# st.pyplot(arima_forecast_plot)
+	fig, ax = plt.subplots()
+	ax = sns.lineplot(x="GI Shipment Month", y="Demand Prediction (Units)", hue='Product Category',
+					  data=ARIMA_Data_Summary)
+	ax.set_title("Shipment forecast for each product category")
+	st.pyplot(fig)
 
 
 	st.subheader(" Forecast dataframe for future demand using ARIMA")

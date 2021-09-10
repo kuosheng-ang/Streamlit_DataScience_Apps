@@ -79,30 +79,7 @@ def preprocessing_data():
 	GI_Sales_Stats_Data['GI-Year Month'] = pd.to_datetime(GI_Sales_Stats_Data['GI-Year Month'])
 	return GI_Sales_Stats_Data
 
-def tsplot(y, lags, figsize=(12, 7), style='bmh', category=i):
-    """
-        Plot time series, its ACF and PACF, calculate Dickey–Fuller test
-        y - timeseries
-        lags - how many lags to include in ACF, PACF calculation
-    """
 
-    if not isinstance(y, pd.Series):
-        y = pd.Series(y)
-
-    with plt.style.context(style):
-        fig = plt.figure(figsize=figsize)
-        layout = (2, 2)
-        ts_ax = plt.subplot2grid(layout, (0, 0), colspan=2)
-        acf_ax = plt.subplot2grid(layout, (1, 0))
-        pacf_ax = plt.subplot2grid(layout, (1, 1))
-
-        y.plot(ax=ts_ax)
-        p_value = sm.tsa.stattools.adfuller(y)[1]
-        ts_ax.set_title( i + ' - Time Series Analysis Plots\n Dickey-Fuller: p={0:.5f} '.format(p_value))
-        smt.graphics.plot_acf(y, lags=lags, ax=acf_ax)
-        smt.graphics.plot_pacf(y, lags=lags, ax=pacf_ax)
-        plt.tight_layout()
-	st.pyplot(fig)
 
 def descriptive_analysis():
 
@@ -123,14 +100,6 @@ def descriptive_analysis():
 
 	'''Create the list of product category for Time series plot showing its ACF and PACF'''
 	product_sub_category = GI_df_forecasting_df_filtered['Package'].unique()
-
-	st.subheader("Time series plot showing its ACF and PACF, calculate Dickey–Fuller test for each product category")
-
-	for category in product_sub_category:
-		plt.subplots(figsize=(15, 8))
-		GI_Category_Shipment_ts_df = GI_df_forecasting_df_filtered.loc[GI_df_forecasting_df_filtered['Package'] == category]
-		ts_ax = GI_Category_Shipment_ts_df.groupby(GI_Category_Shipment_ts_df['GI-Year Month'].dt.strftime('%Y-%m'))['Total Quantity'].sum()
-		tsplot(ts_ax, lags=2, category=cate)
 
 	st.subheader("choice of visualization plot")
 

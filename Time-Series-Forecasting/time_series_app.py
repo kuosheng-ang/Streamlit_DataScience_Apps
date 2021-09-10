@@ -405,14 +405,14 @@ if __name__ == '__main__':
 	st.sidebar.write('')  # Line break
 	st.sidebar.header('Navigation Menu')
 	side_menu_selectbox = st.sidebar.radio(
-		'Menu', ('Home','Descriptive Analysis', 'Predictive Analysis - ARIMA', 'Bayesian modeling and visualization - PyMC3'))
+		'Menu', ('Home','Descriptive Analysis', 'Predictive Analysis - ARIMA'))
 	if side_menu_selectbox == 'Home':
 		home(homepage_path=os.path.join(image_folder_path,'doc/homepage.md'), contact_path=os.path.join(image_folder_path,'doc/contact.md'))
 	elif side_menu_selectbox == 'Descriptive Analysis':
 		descriptive_analysis()
 	elif side_menu_selectbox == 'Predictive Analysis - ARIMA':
 		sub_menu_selectbox = st.sidebar.radio(
-			'Type of Predictive Model', ('ARIMA', 'Exponential Smoothing (Holt Winter)', 'Double Exponential Smoothing'))
+			'Type of Predictive Model', ('ARIMA'))
 		if sub_menu_selectbox == 'ARIMA':
 			arima_model_fcast()
 		# elif sub_menu_selectbox == 'Exponential Smoothing (Holt Winter)':

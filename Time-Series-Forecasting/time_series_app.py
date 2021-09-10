@@ -55,7 +55,6 @@ def make_downloadable_df_format(data,format_type="csv"):
 	b64 = base64.b64encode(datafile.encode()).decode()  # B64 encoding
 	st.markdown("### ** Download File  📩 ** ")
 	new_filename = "{}.{}".format(timestr,format_type)
-	# href = f'<a href="data:file/{format_type};base64,{b64}" download="{new_filename}">Click Here!</a>'
 	st.markdown(href, unsafe_allow_html=True)
 
 
@@ -64,13 +63,6 @@ def main():
 	# st.title("Common ML Dataset Explorer")
 	st.subheader("Time-Series Analysis App")
 
-	# img_list = glob.glob("images/*.png")
-	# # st.write(img_list)
-	# # for i in img_list:
-	# # 	c_image = Image.open(i)
-	# # 	st.image(i)
-	# all_image = [Image.open(i) for i in img_list]
-	# st.image(all_image)
 
 @st.cache(persist=True)
 def load_data():
@@ -87,45 +79,31 @@ def preprocessing_data():
 	GI_Sales_Stats_Data['GI-Year Month'] = pd.to_datetime(GI_Sales_Stats_Data['GI-Year Month'])
 	return GI_Sales_Stats_Data
 
+def tsplot(y, lags, figsize=(12, 7), style='bmh', category=i):
+    """
+        Plot time series, its ACF and PACF, calculate Dickey–Fuller test
+        y - timeseries
+        lags - how many lags to include in ACF, PACF calculation
+    """
 
-	#
-	# # Show Dataset
-	# if st.checkbox("Show DataSet"):
-	# 	number = st.number_input("Number of Rows to View")
-	# 	st.dataframe(df.head(number))
-	# # Show Column Names
-	# if st.button("Columns Names"):
-	# 	st.write(df.columns)
-	#
-	# # Show Shape of Dataset
-	# if st.checkbox("Shape of Dataset"):
-	# 	st.write(df.shape)
-	# 	data_dim = st.radio("Show Dimension by",("Rows","Columns"))
-	# 	if data_dim == 'Rows':
-	# 		st.text("Number of  Rows")
-	# 		st.write(df.shape[0])
-	# 	elif data_dim == 'Columns':
-	# 		st.text("Number of Columns")
-	# 		st.write(df.shape[1])
-	# # Show Columns By Selection
-	# if st.checkbox("Select Columns To Show"):
-	# 	all_columns = df.columns.tolist()
-	# 	selected_columns = st.multiselect('Select',all_columns)
-	# 	new_df = df[selected_columns]
-	# 	st.dataframe(new_df)
-	#
-	# # Datatypes
-	# if st.button("Data Types"):
-	# 	st.write(df.dtypes)
-	#
-	# # Value Counts
-	# if st.button("Value Counts"):
-	# 	st.text("Value Counts By Target/Class")
-	# 	st.write(df.iloc[:,-1].value_counts())
-	#
-	# # Summary
-	# if st.checkbox("Summary"):
-	# 	st.write(df.describe())
+    if not isinstance(y, pd.Series):
+        y = pd.Series(y)
+
+    with plt.style.context(style):
+        fig = plt.figure(figsize=figsize)
+        layout = (2, 2)
+        ts_ax = plt.subplot2grid(layout, (0, 0), colspan=2)
+        acf_ax = plt.subplot2grid(layout, (1, 0))
+        pacf_ax = plt.subplot2grid(layout, (1, 1))
+
+        y.plot(ax=ts_ax)
+        p_value = sm.tsa.stattools.adfuller(y)[1]
+        ts_ax.set_title( i + ' - Time Series Analysis Plots\n Dickey-Fuller: p={0:.5f} '.format(p_value))
+        smt.graphics.plot_acf(y, lags=lags, ax=acf_ax)
+        smt.graphics.plot_pacf(y, lags=lags, ax=pacf_ax)
+        plt.tight_layout()
+	st.pyplot(fig)
+
 def descriptive_analysis():
 
 	html_temp = """
@@ -134,23 +112,35 @@ def descriptive_analysis():
 	st.markdown(html_temp, unsafe_allow_html=True)
 
 	st.subheader("Pivot Chart Report of Aggregated Shipment Volume")
-	GI_df_forecasting_pvt = preprocessing_data()
-	GI_df_forecasting_pvt = GI_df_forecasting_pvt.loc[GI_df_forecasting_pvt['Total Quantity'] > 0]
-	GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting_pvt, values=['Total Quantity'], index='GI-Year Month',
+	GI_df_forecasting_df = preprocessing_data()
+	GI_df_forecasting_df_filtered = GI_df_forecasting_df.loc[GI_df_forecasting_df['Total Quantity'] > 0]
+	GI_df_forecasting_pvt = pd.pivot_table(GI_df_forecasting_df_filtered, values=['Total Quantity'], index='GI-Year Month',
 										   columns='Package', aggfunc=np.sum)
-	GI_df_forecasting_pvt = GI_df_forecasting_pvt.applymap('{:,}'.format)
-	st.dataframe(GI_df_forecasting_pvt)
+	GI_df_forecasting_pvt_format = GI_df_forecasting_pvt.applymap('{:,}'.format)
+
+	'''Input source present data as into Pivot Table layout'''
+	st.dataframe(GI_df_forecasting_pvt_format)
+
+	'''Create the list of product category for Time series plot showing its ACF and PACF'''
+	product_sub_category = GI_df_forecasting_df_filtered['Package'].unique()
+
+	st.subheader("Time series plot showing its ACF and PACF, calculate Dickey–Fuller test for each product category")
+
+	for category in product_sub_category:
+		plt.subplots(figsize=(15, 8))
+		GI_Category_Shipment_ts_df = GI_df_forecasting_df_filtered.loc[GI_df_forecasting_df_filtered['Package'] == category]
+		ts_ax = GI_Category_Shipment_ts_df.groupby(GI_Category_Shipment_ts_df['GI-Year Month'].dt.strftime('%Y-%m'))['Total Quantity'].sum()
+		tsplot(ts_ax, lags=2, category=cate)
+
 	st.subheader("choice of visualization plot")
 
 	# Matplotlib Plot on each product category - Bar Chart
 	if st.checkbox("Bar Chart Plot "):
 	# with col2:
 		fig, ax = plt.subplots(figsize=(15, 8))
-		GI_Sales_stats_data = preprocessing_data()
-		product_sub_cat = GI_Sales_stats_data['Package'].unique()
-		selected_product_category = st.selectbox('Select Product Category:', product_sub_cat)
-		GI_Category_Shipment_df = GI_Sales_stats_data.loc[GI_Sales_stats_data['Package'] == selected_product_category]
-		ax = (GI_Category_Shipment_df.groupby(GI_Category_Shipment_df['GI-Year Month'].dt.strftime('%Y-%m'))['Total Quantity'].sum().plot.bar(figsize=(15, 6)))
+		selected_product_category = st.selectbox('Select Product Category:', product_sub_category)
+		GI_Category_Shipment_selected_df = GI_df_forecasting_df_filtered.loc[GI_df_forecasting_df_filtered['Package'] == selected_product_category]
+		ax = (GI_Category_Shipment_selected_df.groupby(GI_Category_Shipment_selected_df['GI-Year Month'].dt.strftime('%Y-%m'))['Total Quantity'].sum().plot.bar(figsize=(15, 6)))
 		ax.set_xlabel("Shipment Period (Y-M)", fontsize=15)
 		ax.set_ylabel("Units", fontsize=15)
 		ax.set_title("Shipment Quantities for " + selected_product_category + " package type ", fontsize=15)
@@ -160,11 +150,9 @@ def descriptive_analysis():
 	elif st.checkbox("Line Chart Plot "):
 	# with col1:
 		fig, ax = plt.subplots(figsize=(15, 8))
-		GI_Sales_stats_data = preprocessing_data()
-		product_sub_cat = GI_Sales_stats_data['Package'].unique()
-		selected_product_category = st.selectbox('Select Product Category:', product_sub_cat)
-		GI_Category_Shipment_df = GI_Sales_stats_data.loc[GI_Sales_stats_data['Package'] == selected_product_category]
-		ax = (GI_Category_Shipment_df.groupby(GI_Category_Shipment_df['GI-Year Month'].dt.strftime('%Y-%m'))['Total Quantity'].sum().plot(kind='line', figsize=(15, 6)))
+		selected_product_category = st.selectbox('Select Product Category:', product_sub_category)
+		GI_Category_Shipment_selected_df = GI_df_forecasting_df_filtered.loc[GI_df_forecasting_df_filtered['Package'] == selected_product_category]
+		ax = (GI_Category_Shipment_selected_df.groupby(GI_Category_Shipment_selected_df['GI-Year Month'].dt.strftime('%Y-%m'))['Total Quantity'].sum().plot(kind='line', figsize=(15, 6)))
 		ax.set_xlabel("Shipment Period (Y-M)", fontsize=15)
 		ax.set_ylabel("Units", fontsize=15)
 		ax.set_title("Shipment Quantities for " + selected_product_category + " package type ", fontsize=15)

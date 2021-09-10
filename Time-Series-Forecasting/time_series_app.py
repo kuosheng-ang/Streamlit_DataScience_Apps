@@ -412,7 +412,7 @@ if __name__ == '__main__':
 		descriptive_analysis()
 	elif side_menu_selectbox == 'Predictive Analysis - ARIMA':
 		sub_menu_selectbox = st.sidebar.radio(
-			'Type of Predictive Model', ('ARIMA', 'Exponential Smoothing (Holt Winter)', 'Double Exponential Smoothing'))
+			'Type of Predictive Model', ('ARIMA', 'Exponential Smoothing (Holt Winter)'))
 		if sub_menu_selectbox == 'ARIMA':
 			arima_model_fcast()
 		elif sub_menu_selectbox == 'Exponential Smoothing (Holt Winter)':
